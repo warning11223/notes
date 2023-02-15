@@ -1,0 +1,23 @@
+.isDone {
+    opacity: 0.5;
+    transition: all .2s linear;
+}
+.listCheckboxes {
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+.ul {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 0;
+}
+.titleContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}

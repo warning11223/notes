@@ -1,4 +1,5 @@
 import React, {ChangeEvent, useState} from 'react';
+import TextField from '@mui/material/TextField';
 
 type PropsType = {
     children: React.ReactNode
@@ -23,7 +24,9 @@ const EditableSpan: React.FC<PropsType> = ({children, editCallback}) => {
     }
 
     return (
-        editable ? <input
+        editable ? <TextField
+            variant='standard'
+            color='warning'
             type="text"
             value={valueInput}
             onChange={changeInputHandler}
