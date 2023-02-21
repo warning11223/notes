@@ -20,13 +20,13 @@ test('todolistReducer should add new todolist', () => {
 
     //action
     const newTodolist: TodoListType = {id: v1(), title: 'new todolist', filter: 'all'};
-    const action = addTodolistAC(newTodolist, 'HELLO WORLD')
+    const action = addTodolistAC(newTodolist)
     const newState = todolistReducer(todoLists, action);
 
     //expectation
 
     expect(newState.length).toBe(3)
-    expect(newState[2].title).toBe('HELLO WORLD')
+    expect(newState[2].title).toBe('new todolist')
 })
 
 test('todolistReducer should remove todolist', () => {

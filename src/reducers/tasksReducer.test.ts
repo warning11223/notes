@@ -144,7 +144,7 @@ test('todolist should be added', () => {
     })
 
     const newTodolist: TodoListType = {id: v1(), title: 'new todolist', filter: 'all'};
-    const newTasks = tasksReducer(tasks, addTodolistAC( newTodolist, 'new todolist'))
+    const newTasks = tasksReducer(tasks, addTodolistAC( newTodolist))
 
     const keys = Object.keys(newTasks);
     const newKey = keys.find(item => item !== todoListId1 && item !== todoListId2);

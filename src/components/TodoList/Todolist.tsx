@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from 'react';
+import React from 'react';
 import {FilterValuesType} from '../../App';
 import AddForm from '../AddForm/AddForm';
 import EditableSpan from '../EditableSpan';
@@ -8,84 +8,101 @@ import s from './TodoList.module.css'
 import IconButton from '@mui/material/IconButton/IconButton';
 import Button from '@mui/material/Button/Button';
 import Checkbox from '@mui/material/Checkbox/Checkbox';
-
-type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
-}
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../redux/store';
+import {addTaskAC, changeCheckedAC, editTaskAC, removeTaskAC} from '../../reducers/tasksReducer';
+import {changeFilterAC, editTodolistAC, removeTodolistAC} from '../../reducers/todolistReducer';
 
 type PropsType = {
     title: string
-    tasks: Array<TaskType>
-    removeTask: (taskId: string, todoListId: string) => void
-    changeFilter: (value: FilterValuesType, todoListId: string) => void
-    addTask: (title: string, todoListId: string) => void
-    isChecked: (id: string, checked: boolean, todoListId: string) => void
     filter: FilterValuesType
     id: string
-    deleteTodoList: (todoListId: string) => void
-    editTask: (value: string, id: string, taskId: string) => void
-    editTitle: (title: string, todoListId: string) => void
 }
 
 export function Todolist(props: PropsType) {
 
-    const onAllClickHandler = () => props.changeFilter("all", props.id);
-    const onActiveClickHandler = () => props.changeFilter("active", props.id);
-    const onCompletedClickHandler = () => props.changeFilter("completed", props.id);
+    const dispatch = useDispatch();
+    const tasks = useSelector((state: RootState) => state.tasksReducer)
 
-    const addTask = (title: string) => {
-        props.addTask(title, props.id)
+    /*function removeTask(id: string, todoListId: string) {
+        dispatch(removeTaskAC(todoListId, id));
     }
 
-    const editTitle = (value: string) => {
-        props.editTitle(value, props.id)
+    function addTask(title: string) {
+        dispatch(addTaskAC(props.id, title));
     }
 
-    return <div style={{padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-start'}}>
+    function changeFilter(value: FilterValuesType) {
+        dispatch(changeFilterAC(props.id, value));
+    }
+
+    function isChecked(id: string, checked: boolean, todoListId: string) {
+        dispatch(changeCheckedAC(todoListId, id, checked));
+    }
+
+    function deleteTodoList(todoListId: string) {
+        dispatch(removeTodolistAC(todoListId));
+    }
+
+    function editTask(value: string, todoListId: string, taskId: string) {
+        dispatch(editTaskAC(todoListId, taskId, value));
+    }
+
+    function editTitle(title: string) {
+        dispatch(editTodolistAC(title, props.id));
+    }*/
+
+    let tasksForTodolist = tasks[props.id];
+
+    if (props.filter === 'active') {
+        tasksForTodolist = tasksForTodolist.filter(t => t.isDone === false);
+    }
+    if (props.filter === 'completed') {
+        tasksForTodolist = tasksForTodolist.filter(t => t.isDone === true);
+    }
+
+    return <div style={{
+        padding: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-start'
+    }}>
         <div className={s.titleContainer}>
-            <h3><EditableSpan editCallback={editTitle}>{props.title}</EditableSpan></h3>
-            <IconButton color='error' onClick={() => props.deleteTodoList(props.id)}>
+            <h3><EditableSpan
+                editCallback={(title: string) => dispatch(editTodolistAC(title, props.id))}>{props.title}</EditableSpan>
+            </h3>
+            <IconButton color="error" onClick={() => dispatch(removeTodolistAC(props.id))}>
                 <DeleteIcon
                     style={{cursor: 'pointer'}}
-                    color='error'
-                    fontSize='medium'
+                    color="error"
+                    fontSize="medium"
                 />
             </IconButton>
         </div>
 
-        <AddForm placeholder='Add task' addTaskCallback={addTask} />
+        <AddForm placeholder="Add task" addTaskCallback={(title: string) => dispatch(addTaskAC(props.id, title))}/>
 
         <ul className={s.ul}>
             {
-                props.tasks.map(t => {
-
-                    const onClickHandler = () => props.removeTask(t.id, props.id)
-
-                    const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-                        props.isChecked(t.id, event.currentTarget.checked, props.id)
-                    }
-
-                    const editTaskCallback = (title: string) => {
-                        props.editTask(title, props.id, t.id)
-                    }
+                tasksForTodolist.map(t => {
 
                     return <li key={t.id} className={`${s.listCheckboxes} ${t.isDone ? s.isDone : ''}`}>
                         <Checkbox
                             checked={t.isDone}
-                            onChange={onChangeHandler}
-                            size='medium'
-                            color='warning'
+                            onChange={(e) => dispatch(changeCheckedAC(props.id, t.id, e.currentTarget.checked))}
+                            size="medium"
+                            color="warning"
                         />
                         {/*<input type="checkbox" checked={t.isDone} onChange={onChangeHandler} />*/}
                         {/*<CheckBoxOutlineBlankIcon type={'checkbox'} checked={t.isDone} onChange={onChangeHandler}></CheckBoxOutlineBlankIcon>*/}
-                        <EditableSpan editCallback={editTaskCallback}>{t.title}</EditableSpan>
-                        <IconButton color='error' onClick={ onClickHandler }>
+                        <EditableSpan
+                            editCallback={(title: string) => dispatch(editTaskAC(props.id, t.id, title))}>{t.title}</EditableSpan>
+                        <IconButton color="error" onClick={() => dispatch(removeTaskAC(props.id, t.id))}>
                             <DeleteIcon
                                 style={{cursor: 'pointer'}}
-                                color='error'
-                                fontSize='medium'
+                                color="error"
+                                fontSize="medium"
                             />
                         </IconButton>
                     </li>
@@ -95,21 +112,21 @@ export function Todolist(props: PropsType) {
         <div>
             <Button
                 variant={`${props.filter === 'all' ? 'contained' : 'text'}`}
-                size='small'
+                size="small"
                 color={`${props.filter === 'all' ? 'warning' : 'warning'}`}
-                onClick={ onAllClickHandler }
+                onClick={() => dispatch(changeFilterAC(props.id, 'all'))}
             >All</Button>
             <Button
                 variant={`${props.filter === 'active' ? 'contained' : 'text'}`}
-                size='small'
+                size="small"
                 color={`${props.filter === 'active' ? 'warning' : 'warning'}`}
-                onClick={ onActiveClickHandler }
+                onClick={() => dispatch(changeFilterAC(props.id, 'active'))}
             >Active</Button>
             <Button
                 variant={`${props.filter === 'completed' ? 'contained' : 'text'}`}
-                size='small'
+                size="small"
                 color={`${props.filter === 'completed' ? 'warning' : 'warning'}`}
-                onClick={ onCompletedClickHandler }
+                onClick={() => dispatch(changeFilterAC(props.id, 'completed'))}
             >Completed</Button>
         </div>
     </div>
