@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import './App.css';
 import {Todolist} from './components/TodoList/Todolist';
 import {v1} from 'uuid';
@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from './redux/store';
 
 export type FilterValuesType = 'all' | 'active' | 'completed';
+
 export type TodoListType = {
     id: string
     title: string
@@ -44,18 +45,21 @@ const theme = createTheme({
     },
 });
 
-function App() {
+const App = () => {
+    console.log('App')
     const dispatch = useDispatch();
     const todolists = useSelector((state: RootState) => state.todolistReducer);
+    const tasks = useSelector((state: RootState) => state.tasksReducer);
 
-    function addTodoList(title: string) {
+    const addTodoList = useCallback((title: string) => {
         const newTodolist: TodoListType = {id: v1(), title, filter: 'all'};
 
         dispatch(addTodolistAC(newTodolist));
         dispatch(addInitialAC(newTodolist.id));
-    }
+    }, [dispatch])
 
     const todoListsRender = todolists.map(item => {
+        const allTodolistTasks = tasks[item.id];
 
         return (
             <Grid item xs={3.5} key={item.id}>
@@ -64,6 +68,7 @@ function App() {
                         id={item.id}
                         title={item.title}
                         filter={item.filter}
+                        tasks={allTodolistTasks}
                     />
                 </Paper>
             </Grid>

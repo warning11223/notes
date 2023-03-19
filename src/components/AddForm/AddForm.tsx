@@ -13,7 +13,8 @@ type PropsType = {
     placeholder: string
 }
 
-const AddForm: React.FC<PropsType> = ({addTaskCallback, placeholder}) => {
+const AddForm: React.FC<PropsType> = React.memo(({addTaskCallback, placeholder}) => {
+    console.log('AddForm')
     let [title, setTitle] = useState('')
     const [error, setError] = useState<string | null>(null)
 
@@ -22,21 +23,22 @@ const AddForm: React.FC<PropsType> = ({addTaskCallback, placeholder}) => {
             addTaskCallback(title.trim());
             setTitle('');
         } else {
-            setError('Title is required')
+            setError('Title is required');
         }
     }
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setError(null)
-        setTitle(e.currentTarget.value)
+        setTitle(e.currentTarget.value);
     }
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (error !== null) setError(null);
         if (e.charCode === 13 && title.trim() !== '') {
             addTask();
-        } else {
-            setError('Title is required')
         }
+        /*else {
+            setError('Title is required')
+        }*/
     }
 
     const onBlurHandler = () => {
@@ -67,10 +69,10 @@ const AddForm: React.FC<PropsType> = ({addTaskCallback, placeholder}) => {
                         style={{cursor: 'pointer'}}
                     />
                 </IconButton>
-               {/* <div className="error-message">{error}</div>*/}
+                {/* <div className="error-message">{error}</div>*/}
             </div>
         </div>
     );
-};
+})
 
 export default AddForm;
