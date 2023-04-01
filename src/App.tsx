@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import {Todolist} from './components/TodoList/Todolist';
 import {v1} from 'uuid';
@@ -11,28 +11,12 @@ import {ThemeProvider} from '@mui/material/styles';
 import Container from '@mui/material/Container/Container';
 import ButtonAppBar from './components/ButtonAppBar/ButtonAppBar';
 
-import {addTodolistAC} from './reducers/todolistReducer';
-import {addInitialAC} from './reducers/tasksReducer';
-import {useDispatch, useSelector} from 'react-redux';
+import {createTodolistTC, getTodolistsTC, TodoListType} from './reducers/todolistReducer';
+import {useSelector} from 'react-redux';
 import {RootState} from './redux/store';
+import {useAppDispatch, useAppSelector} from './hooks';
 
 export type FilterValuesType = 'all' | 'active' | 'completed';
-
-export type TodoListType = {
-    id: string
-    title: string
-    filter: FilterValuesType
-}
-
-export type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
-}
-
-export type TasksType = {
-    [key: string]: TaskType[]
-}
 
 const theme = createTheme({
     palette: {
@@ -46,16 +30,16 @@ const theme = createTheme({
 });
 
 const App = () => {
-    console.log('App')
-    const dispatch = useDispatch();
-    const todolists = useSelector((state: RootState) => state.todolistReducer);
+    const dispatch = useAppDispatch();
+    const todolists = useAppSelector((state: RootState) => state.todolistReducer);
     const tasks = useSelector((state: RootState) => state.tasksReducer);
 
-    const addTodoList = useCallback((title: string) => {
-        const newTodolist: TodoListType = {id: v1(), title, filter: 'all'};
+    useEffect(() => {
+        dispatch(getTodolistsTC())
+    }, [])
 
-        dispatch(addTodolistAC(newTodolist));
-        dispatch(addInitialAC(newTodolist.id));
+    const addTodoList = useCallback((title: string) => {
+        dispatch(createTodolistTC(title));
     }, [dispatch])
 
     const todoListsRender = todolists.map(item => {

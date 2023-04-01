@@ -14,7 +14,6 @@ type PropsType = {
 }
 
 const AddForm: React.FC<PropsType> = React.memo(({addTaskCallback, placeholder}) => {
-    console.log('AddForm')
     let [title, setTitle] = useState('')
     const [error, setError] = useState<string | null>(null)
 

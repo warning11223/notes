@@ -7,7 +7,6 @@ type PropsType = {
 }
 
 const EditableSpan: React.FC<PropsType> = React.memo(({children, editCallback}) => {
-    console.log('EditableSpan')
     const [editable, setEditable] = useState(false);
     const [valueInput, setValueInput] = useState('');
 
