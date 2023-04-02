@@ -1,13 +1,12 @@
 import {v1} from 'uuid';
 import {AddTodoListActionType, RemoveTodoListActionType, SetTodolistsType} from './todolistReducer';
 import {TaskResponseType, todolistAPI} from '../api/todolist-api';
-import {AppThunk, RootState} from '../redux/store';
+import {AppThunk, RootState} from '../app/store';
 import {Dispatch} from 'redux';
 
 export type ActionsTasksType =
     RemoveTaskActionType
     | AddTaskActionType
-    | ChangeCheckedActionType
     | EditTaskActionType
     | RemoveTodoListActionType
     | AddTodoListActionType
@@ -44,23 +43,18 @@ export const tasksReducer = (state = initialState, action: ActionsTasksType): Ta
                 [action.payload.todoListId]: state[action.payload.todoListId].filter(item => item.id !== action.payload.taskId)
             };
         case 'ADD_TASK':
-            return {...state, [action.payload.task.todoListId]: [action.payload.task, ...state[action.payload.task.todoListId]]};
-        case 'ADD_INITIAL_ARRAY':
-            return {...state, [action.payload.todoListId]: []}
-        case 'CHANGE_CHECKED':
             return {
                 ...state,
-                [action.payload.todoListId]: state[action.payload.todoListId].map(item => item.id === action.payload.taskId ? {
-                    ...item,
-                    status: action.payload.status
-                } : item)
+                [action.payload.task.todoListId]: [action.payload.task, ...state[action.payload.task.todoListId]]
             };
+        case 'ADD_INITIAL_ARRAY':
+            return {...state, [action.payload.todoListId]: []}
         case 'EDIT_TASK':
             return {
                 ...state,
                 [action.payload.todoListId]: state[action.payload.todoListId].map(item => item.id === action.payload.taskId ? {
                     ...item,
-                    title: action.payload.title
+                    ...action.payload.model
                 } : item)
             };
         case 'REMOVE_TODOLIST':
@@ -86,7 +80,6 @@ export const tasksReducer = (state = initialState, action: ActionsTasksType): Ta
 
 export type RemoveTaskActionType = ReturnType<typeof deleteTaskAC>;
 export type AddTaskActionType = ReturnType<typeof addTaskAC>;
-export type ChangeCheckedActionType = ReturnType<typeof changeCheckedAC>;
 export type EditTaskActionType = ReturnType<typeof editTaskAC>;
 export type AddInitialArrayType = ReturnType<typeof addInitialAC>;
 export type SetTasksACType = ReturnType<typeof setTasksAC>;
@@ -99,12 +92,8 @@ export const addTaskAC = (task: TaskResponseType) => ({
     type: 'ADD_TASK', payload: {task}
 }) as const;
 
-export const changeCheckedAC = (todoListId: string, taskId: string, status: number) => ({
-    type: 'CHANGE_CHECKED', payload: {todoListId, taskId, status}
-}) as const;
-
-export const editTaskAC = (todoListId: string, taskId: string, title: string) => ({
-    type: 'EDIT_TASK', payload: {todoListId, taskId, title}
+export const editTaskAC = (todoListId: string, taskId: string, model: UpdateTaskModelType) => ({
+    type: 'EDIT_TASK', payload: {todoListId, taskId, model}
 }) as const;
 
 export const addInitialAC = (todoListId: string) => ({
@@ -114,7 +103,6 @@ export const addInitialAC = (todoListId: string) => ({
 export const setTasksAC = (todolistID: string, tasks: TaskResponseType[]) => ({
     type: 'SET_TASKS', payload: {tasks, todolistID}
 }) as const
-
 
 export const setTasksTC = (todolistID: string): AppThunk => (dispatch: Dispatch) => {
     todolistAPI.getTasks(todolistID)
@@ -137,38 +125,17 @@ export const addTaskTC = (todolistID: string, taskTitle: string): AppThunk => (d
         })
 }
 
-export const editTaskTC = (todolistID: string, taskID: string, properties: {
-    title: string,
-    description: string,
-    completed: boolean,
-    status: number,
-    priority: number,
-    startDate: string,
-    deadline: string,
-}): AppThunk => (dispatch: Dispatch) => {
-    todolistAPI.editTask(todolistID, taskID, {
-        title: properties.title,
-        completed: properties.completed,
-        status: properties.status,
-        startDate: properties.startDate,
-        priority: properties.priority,
-        description: properties.description,
-        deadline: properties.deadline
-    })
-        .then(() => {
-            dispatch(editTaskAC(todolistID, taskID, properties.title))
-        })
+export type UpdateTaskModelType = {
+    title?: string,
+    description?: string,
+    completed?: boolean,
+    status?: number,
+    priority?: number,
+    startDate?: string,
+    deadline?: string,
 }
 
-export const changeCheckedTC = (todolistID: string, taskID: string, properties: {
-    title: string,
-    description: string,
-    completed: boolean,
-    status: number,
-    priority: number,
-    startDate: string,
-    deadline: string,
-}): AppThunk => (dispatch: Dispatch, getState: () => RootState) => {
+export const editTaskTC = (todolistID: string, taskID: string, taskModel: UpdateTaskModelType): AppThunk => (dispatch: Dispatch, getState: () => RootState) => {
     const state = getState();
     const task = state.tasksReducer[todolistID].find(item => item.id === taskID);
     if (!task) {
@@ -176,16 +143,19 @@ export const changeCheckedTC = (todolistID: string, taskID: string, properties: 
         return;
     }
 
-    todolistAPI.editTask(todolistID, taskID, {
-        title: properties.title,
-        completed: properties.completed,
-        status: properties.status,
-        startDate: properties.startDate,
-        priority: properties.priority,
-        description: properties.description,
-        deadline: properties.deadline
-    })
-        .then(res => {
-            dispatch(changeCheckedAC(todolistID, taskID, res.item.status))
+    const model = {
+        title: task.title,
+        completed: task.completed,
+        status: task.status,
+        startDate: task.startDate,
+        priority: task.priority,
+        description: task.description,
+        deadline: task.deadline,
+        ...taskModel
+    }
+
+    todolistAPI.editTask(todolistID, taskID, model)
+        .then(() => {
+            dispatch(editTaskAC(todolistID, taskID, model))
         })
 }

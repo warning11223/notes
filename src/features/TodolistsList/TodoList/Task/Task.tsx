@@ -1,20 +1,12 @@
 import React, {ChangeEvent, useCallback} from 'react';
-import s from '../TodoList/TodoList.module.css';
+import s from '../TodoList.module.css';
 import Checkbox from '@mui/material/Checkbox/Checkbox';
-import {
-    changeCheckedAC,
-    changeCheckedTC,
-    editTaskAC,
-    editTaskTC,
-    deleteTaskAC,
-    deleteTaskTC
-} from '../../reducers/tasksReducer';
-import EditableSpan from '../EditableSpan/EditableSpan';
+import {deleteTaskTC, editTaskTC} from '../../../../reducers/tasksReducer';
+import EditableSpan from '../../../../components/EditableSpan/EditableSpan';
 import IconButton from '@mui/material/IconButton/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {useDispatch} from 'react-redux';
-import {TaskResponseType, TaskStatuses} from '../../api/todolist-api';
-import {useAppDispatch} from '../../hooks';
+import {TaskResponseType, TaskStatuses} from '../../../../api/todolist-api';
+import {useAppDispatch} from '../../../../app/hooks';
 
 type TaskProps = {
     task: TaskResponseType
@@ -25,17 +17,7 @@ const Task: React.FC<TaskProps> = React.memo(({task, todolistId}) => {
     const dispatch = useAppDispatch();
 
     const editTaskHandler = useCallback((title: string) => {
-        const properties = {
-            title,
-            description: task.description,
-            completed: task.completed,
-            status: task.status,
-            priority: task.priority,
-            startDate: task.startDate,
-            deadline: task.deadline
-        };
-
-        dispatch(editTaskTC(todolistId, task.id, properties))
+        dispatch(editTaskTC(todolistId, task.id, {title}))
     }, [dispatch, todolistId, task.id])
 
     const deleteTaskHandler = () => {
@@ -48,17 +30,8 @@ const Task: React.FC<TaskProps> = React.memo(({task, todolistId}) => {
 
     const changeCheckedHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const status = e.currentTarget.checked ? 2 : 0;
-        const properties = {
-            title: task.title,
-            description: task.description,
-            completed: task.completed,
-            status,
-            priority: task.priority,
-            startDate: task.startDate,
-            deadline: task.deadline
-        };
 
-        dispatch(changeCheckedTC(todolistId, task.id, properties))
+        dispatch(editTaskTC(todolistId, task.id, {status}))
     }, [dispatch,todolistId, task.id])
 
     return (

@@ -3,8 +3,8 @@ import React from 'react';
 import {ComponentMeta, ComponentStory} from '@storybook/react';
 
 import {action} from '@storybook/addon-actions';
-import Task from '../components/Task/Task';
-import {ReduxStoreProviderDecorator} from './ReduxStoreProviderDecorator';
+import Task from '../features/TodolistsList/TodoList/Task/Task';
+import {ReduxStoreProviderDecorator} from './decorators/ReduxStoreProviderDecorator';
 
 export default {
     title: 'Task',

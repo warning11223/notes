@@ -2,7 +2,6 @@ import {v1} from 'uuid';
 
 import {
     addTaskAC,
-    changeCheckedAC,
     editTaskAC,
     deleteTaskAC,
     setTasksAC,
@@ -149,7 +148,7 @@ test('task should be added to todolist', () => {
 
 test('checked value should be changed to opposite', () => {
     const taskId = tasks[todoListId1][1].id;
-    const newTasks = tasksReducer(tasks, changeCheckedAC(todoListId1, taskId, TaskStatuses.New))
+    const newTasks = tasksReducer(tasks, editTaskAC(todoListId1, taskId, {status: TaskStatuses.New}))
 
     expect(newTasks[todoListId1].length).toBe(5)
     expect(newTasks[todoListId1][1].status).toBe(TaskStatuses.New)
@@ -157,7 +156,7 @@ test('checked value should be changed to opposite', () => {
 
 test('title value of task should be edited', () => {
     const taskId = tasks[todoListId1][1].id;
-    const newTasks = tasksReducer(tasks, editTaskAC(todoListId1, taskId, 'NEW VALUE'))
+    const newTasks = tasksReducer(tasks, editTaskAC(todoListId1, taskId, {title: 'NEW VALUE'}))
 
     expect(newTasks[todoListId1][1].title).toBe('NEW VALUE')
     expect(newTasks[todoListId1].length).toBe(5)
@@ -254,7 +253,7 @@ test('task should be edited', () => {
         ]
     })
 
-    const newTasks: TasksType = tasksReducer(tasks, editTaskAC(todoListId1, taskId, 'hello world'))
+    const newTasks: TasksType = tasksReducer(tasks, editTaskAC(todoListId1, taskId, {title: 'hello world'}))
 
     expect(newTasks[todoListId1][0].title).toBe('hello world')
     expect(newTasks[todoListId1].length).toBe(1)

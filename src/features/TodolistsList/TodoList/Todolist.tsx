@@ -1,17 +1,17 @@
 import React, {useCallback, useEffect} from 'react';
-import {FilterValuesType} from '../../App';
-import AddForm from '../AddForm/AddForm';
-import EditableSpan from '../EditableSpan/EditableSpan';
+import {FilterValuesType} from '../../../app/App';
+import AddForm from '../../../components/AddForm/AddForm';
+import EditableSpan from '../../../components/EditableSpan/EditableSpan';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import s from './TodoList.module.css';
 import IconButton from '@mui/material/IconButton/IconButton';
-import {addTaskAC, addTaskTC, setTasksTC} from '../../reducers/tasksReducer';
-import {changeFilterAC, editTodolistAC, editTodolistTC, removeTodolistTC} from '../../reducers/todolistReducer';
-import Task from '../Task/Task';
-import FilterButton from '../FilterButton/FilterButton';
-import {TaskResponseType, TaskStatuses} from '../../api/todolist-api';
-import {useAppDispatch} from '../../hooks';
+import {addTaskTC, setTasksTC} from '../../../reducers/tasksReducer';
+import {changeFilterAC, editTodolistTC, removeTodolistTC} from '../../../reducers/todolistReducer';
+import Task from './Task/Task';
+import FilterButton from '../../../components/FilterButton/FilterButton';
+import {TaskResponseType, TaskStatuses} from '../../../api/todolist-api';
+import {useAppDispatch} from '../../../app/hooks';
 
 type PropsType = {
     title: string

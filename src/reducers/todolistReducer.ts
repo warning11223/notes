@@ -1,7 +1,7 @@
-import {FilterValuesType} from '../App';
+import {FilterValuesType} from '../app/App';
 import {todolistAPI, TodolistResponseType} from '../api/todolist-api';
 import {Dispatch} from 'redux';
-import {AppThunk} from '../redux/store';
+import {AppThunk} from '../app/store';
 import {addInitialAC} from './tasksReducer';
 
 export type ActionsTodolistsTypes =
@@ -30,14 +30,9 @@ export const todolistReducer = (state = initialState, action: ActionsTodolistsTy
         case 'EDIT_TITLE_TODOLIST':
             return state.map(item => item.id === action.payload.id ? {...item, title: action.payload.title} : item)
         case 'CHANGE_FILTER':
-            return state.map(item => item.id === action.payload.todoListId ? {
-                ...item,
-                filter: action.payload.filter
-            } : item)
+            return state.map(item => item.id === action.payload.todoListId ? {...item, filter: action.payload.filter } : item)
         case 'SET_TODOLISTS':
-            return action.payload.todolists.map(item => {
-                return {...item, filter: 'all'}
-            })
+            return action.payload.todolists.map(item => ({...item, filter: 'all'}))
         default:
             return state;
     }
@@ -51,23 +46,23 @@ export type SetTodolistsType = ReturnType<typeof setTodolistsAC>;
 
 export const addTodolistAC = (newTodolist: TodoListType) => ({
     type: 'ADD_TODOLIST', payload: {newTodolist}
-}) as const;
+} as const)
 
 export const removeTodolistAC = (id: string) => ({
     type: 'REMOVE_TODOLIST', payload: {id}
-}) as const;
+} as const)
 
 export const editTodolistAC = (title: string, id: string) => ({
     type: 'EDIT_TITLE_TODOLIST', payload: {title, id}
-}) as const;
+} as const)
 
 export const changeFilterAC = (todoListId: string, filter: FilterValuesType) => ({
     type: 'CHANGE_FILTER', payload: {todoListId, filter}
-}) as const;
+} as const)
 
 export const setTodolistsAC = (todolists: TodolistResponseType[]) => ({
     type: 'SET_TODOLISTS', payload: {todolists}
-}) as const
+} as const)
 
 
 export const getTodolistsTC = (): AppThunk => (dispatch: Dispatch) => {
