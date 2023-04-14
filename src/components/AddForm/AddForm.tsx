@@ -11,9 +11,10 @@ import IconButton from '@mui/material/IconButton/IconButton';
 type PropsType = {
     addTaskCallback: (title: string) => void
     placeholder: string
+    disabled?: boolean
 }
 
-const AddForm: React.FC<PropsType> = React.memo(({addTaskCallback, placeholder}) => {
+const AddForm: React.FC<PropsType> = React.memo(({addTaskCallback, placeholder, disabled}) => {
     let [title, setTitle] = useState('')
     const [error, setError] = useState<string | null>(null)
 
@@ -60,11 +61,11 @@ const AddForm: React.FC<PropsType> = React.memo(({addTaskCallback, placeholder})
                     error={!!error}
                     className={`${error ? 'error' : ''}`}
                     helperText={error}
+                    disabled={disabled}
                 />
-                <IconButton color='warning' onClick={addTask}>
+                <IconButton color='warning' onClick={addTask} disabled={disabled}>
                     <AddBoxIcon
                         fontSize='large'
-                        color='warning'
                         style={{cursor: 'pointer'}}
                     />
                 </IconButton>

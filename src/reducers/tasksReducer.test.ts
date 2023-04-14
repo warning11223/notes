@@ -170,7 +170,7 @@ test('todolist should be removed', () => {
 })
 
 test('todolist should be added', () => {
-    const newTodolist: TodoListType = {id: v1(), title: 'new todolist', filter: 'all', order: 0, addedDate: ''};
+    const newTodolist: TodoListType = {id: v1(), title: 'new todolist', filter: 'all', order: 0, addedDate: '', entityStatus: 'idle'};
     const newTasks = tasksReducer(tasks, addTodolistAC(newTodolist))
 
     const keys = Object.keys(newTasks);

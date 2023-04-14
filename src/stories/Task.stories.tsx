@@ -18,7 +18,7 @@ const changeTaskCheckbox = action('Checkbox changed')
 
 export const TaskItemExample: ComponentStory<typeof Task> = () => (
     <>
-        <Task task={{ id: '1', title: 'task 1', completed: false, addedDate: '', todoListId: 'todoListId1', deadline: '', description: '', startDate: '', order: 0, status: 1, priority: 0 }} todolistId={'todoListId1'} />
-        <Task task={{ id: '2', title: 'task 2', completed: true, addedDate: '', todoListId: 'todoListId1', deadline: '', description: '', startDate: '', order: 0, status: 1, priority: 0 }} todolistId={'todoListId1'} />
+        <Task todolistEntityStatus={'idle'} task={{ id: '1', title: 'task 1', completed: false, addedDate: '', todoListId: 'todoListId1', deadline: '', description: '', startDate: '', order: 0, status: 1, priority: 0 }} todolistId={'todoListId1'} />
+        <Task todolistEntityStatus={'idle'} task={{ id: '2', title: 'task 2', completed: true, addedDate: '', todoListId: 'todoListId1', deadline: '', description: '', startDate: '', order: 0, status: 1, priority: 0 }} todolistId={'todoListId1'} />
     </>
 );

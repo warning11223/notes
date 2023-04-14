@@ -7,13 +7,15 @@ import IconButton from '@mui/material/IconButton/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {TaskResponseType, TaskStatuses} from '../../../../api/todolist-api';
 import {useAppDispatch} from '../../../../app/hooks';
+import {StatusTypes} from '../../../../reducers/errorReducer';
 
 type TaskProps = {
     task: TaskResponseType
     todolistId: string
+    todolistEntityStatus: StatusTypes
 }
 
-const Task: React.FC<TaskProps> = React.memo(({task, todolistId}) => {
+const Task: React.FC<TaskProps> = React.memo(({task, todolistId, todolistEntityStatus}) => {
     const dispatch = useAppDispatch();
 
     const editTaskHandler = useCallback((title: string) => {
@@ -41,15 +43,15 @@ const Task: React.FC<TaskProps> = React.memo(({task, todolistId}) => {
                 onChange={changeCheckedHandler}
                 size="medium"
                 color="warning"
+                disabled={todolistEntityStatus === 'loading'}
             />
             {/*<input type="checkbox" checked={t.isDone} onChange={onChangeHandler} />*/}
             {/*<CheckBoxOutlineBlankIcon type={'checkbox'} checked={t.isDone} onChange={onChangeHandler}></CheckBoxOutlineBlankIcon>*/}
             <EditableSpan
                 editCallback={editTaskHandler}>{task.title}</EditableSpan>
-            <IconButton color="error" onClick={deleteTaskHandler}>
+            <IconButton color="error" onClick={deleteTaskHandler} disabled={todolistEntityStatus === 'loading'}>
                 <DeleteIcon
                     style={{cursor: 'pointer'}}
-                    color="error"
                     fontSize="medium"
                 />
             </IconButton>

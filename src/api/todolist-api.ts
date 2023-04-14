@@ -21,6 +21,12 @@ export enum TaskPriorities {
     Later = 4
 }
 
+export enum ResultCode {
+    OK = 0,
+    Error = 1,
+    Captcha = 10
+}
+
 export type TaskResponseType = {
     description: string
     title: string
@@ -90,7 +96,7 @@ export const todolistAPI = {
     },
     createTodolist(title: string) {
         return instance.post<ResponseType<{ item: TodolistType }>>(`todo-lists`, {title})
-            .then(res => res.data.data)
+            .then(res => res.data)
     },
     removeTodolist(id: string) {
         return instance.delete<ResponseType<{}>>(`todo-lists/${id}`)
@@ -98,7 +104,7 @@ export const todolistAPI = {
     },
     editTodolist(id: string, title: string) {
         return instance.put<ResponseType<{}>>(`todo-lists/${id}`, {title})
-            .then(res => res.data.data)
+            .then(res => res.data)
     },
     getTasks(todolistID: string) {
         return instance.get<GetTasksResponseType>(`todo-lists/${todolistID}/tasks`)
@@ -106,7 +112,7 @@ export const todolistAPI = {
     },
     addTask(todolistID: string, taskTitle: string) {
         return instance.post<ResponseType<{ item: TaskResponseType }>>(`todo-lists/${todolistID}/tasks`, { title: taskTitle})
-            .then(res => res.data.data)
+            .then(res => res.data)
     },
     editTask(todolistID: string, taskID: string, properties: {
         title: string
@@ -118,7 +124,7 @@ export const todolistAPI = {
         deadline: string
     }) {
         return instance.put<ResponseType<{ item: TaskResponseType }>>(`todo-lists/${todolistID}/tasks/${taskID}`, properties)
-            .then(res => res.data.data)
+            .then(res => res.data)
     },
     deleteTask(todolistID: string, taskID: string) {
         return instance.delete<ResponseType<{ item: TaskResponseType }>>(`todo-lists/${todolistID}/tasks/${taskID}`)

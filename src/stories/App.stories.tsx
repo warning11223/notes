@@ -18,5 +18,5 @@ export default {
 
 
 export const AppExample: ComponentStory<typeof App> = () => (
-    <App />
+    <App demo={true}/>
 );
