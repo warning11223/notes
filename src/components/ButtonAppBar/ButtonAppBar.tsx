@@ -6,8 +6,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography/Typography';
 import Button from '@mui/material/Button/Button';
 import Box from '@mui/material/Box/Box';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import {logoutTC} from '../../reducers/authReducer';
 
 const ButtonAppBar = () => {
+    const dispatch = useAppDispatch()
+    const isLoggedIn = useAppSelector(state => state.authReducer.isLoggedIn)
+
+    const logoutHandler = () => {
+        dispatch(logoutTC())
+    }
+
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static" color="secondary">
@@ -22,9 +31,11 @@ const ButtonAppBar = () => {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{flexGrow: 1}} color="white">
-                        News
+                        Todolist app
                     </Typography>
-                    <Button color="info">Login</Button>
+                    {
+                        isLoggedIn &&  <Button color="info" onClick={logoutHandler}>Logout</Button>
+                    }
                 </Toolbar>
             </AppBar>
         </Box>

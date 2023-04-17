@@ -5,14 +5,12 @@ export type ResponseType<D> = {
     messages: string[]
     data: D
 }
-
 export enum TaskStatuses {
     New = 0,
     InProgress = 1,
     Completed = 2,
     Draft = 3
 }
-
 export enum TaskPriorities {
     Low = 0,
     Middle = 1,
@@ -20,13 +18,11 @@ export enum TaskPriorities {
     Urgently = 3,
     Later = 4
 }
-
 export enum ResultCode {
     OK = 0,
     Error = 1,
     Captcha = 10
 }
-
 export type TaskResponseType = {
     description: string
     title: string
@@ -40,13 +36,11 @@ export type TaskResponseType = {
     order: number
     addedDate: string
 }
-
 export type GetTasksType = {
     items: TaskResponseType[]
     error: string | null
     totalCount: number
 }
-
 type TaskType = {
     description: string
     title: string
@@ -60,25 +54,33 @@ type TaskType = {
     order: number
     addedDate: string
 }
-
 export type TodolistResponseType = {
     id: string
     title: string
     addedDate: string
     order: number
 }
-
 type TodolistType = {
     id: string
     addedDate: string
     order: number
     title: string
 }
-
 type GetTasksResponseType = {
     error: null | string
     items: TaskType[]
     totalCount: number
+}
+export type AuthRequestType = {
+    email: string
+    password: string
+    rememberMe: boolean
+    captcha?: string
+}
+export type AuthResponseMeType = {
+    id: number
+    email: string
+    login: string
 }
 
 const instance = axios.create({
@@ -129,5 +131,17 @@ export const todolistAPI = {
     deleteTask(todolistID: string, taskID: string) {
         return instance.delete<ResponseType<{ item: TaskResponseType }>>(`todo-lists/${todolistID}/tasks/${taskID}`)
             .then(res => res.data.data)
+    }
+}
+
+export const authAPI = {
+    login(data: AuthRequestType) {
+        return instance.post<ResponseType<{ userId: number }>>('auth/login', data)
+    },
+    logout() {
+        return instance.delete<ResponseType<{}>>('auth/login')
+    },
+    me() {
+        return instance.get<ResponseType<AuthResponseMeType>>('auth/me')
     }
 }

@@ -18,7 +18,6 @@ export function SneakBar() {
     const dispatch = useAppDispatch();
     const error = useSelector<RootState, string | null>(state => state.errorReducer.error);
 
-
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;

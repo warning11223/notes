@@ -1,13 +1,12 @@
 import React, {useCallback, useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {RootState} from '../../app/store';
-import {useSelector} from 'react-redux';
 import {createTodolistTC, getTodolistsTC} from '../../reducers/todolistReducer';
 import Grid from '@mui/material/Grid/Grid';
 import Paper from '@mui/material/Paper/Paper';
 import {Todolist} from './TodoList/Todolist';
 import AddForm from '../../components/AddForm/AddForm';
-import {SneakBar} from '../SneakBar/SneackBar';
+import {Navigate} from 'react-router-dom';
 
 type TodolistsListPropsType = {
     demo?: boolean
@@ -16,10 +15,11 @@ type TodolistsListPropsType = {
 export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo}) => {
     const dispatch = useAppDispatch();
     const todolists = useAppSelector((state: RootState) => state.todolistReducer);
-    const tasks = useSelector((state: RootState) => state.tasksReducer);
+    const tasks = useAppSelector(state => state.tasksReducer)
+    const isLoggedIn = useAppSelector(state => state.authReducer.isLoggedIn)
 
     useEffect(() => {
-        if (demo) {
+        if (demo || !isLoggedIn) {
             return
         }
 
@@ -46,6 +46,10 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo}) => {
         )
     })
 
+    if (!isLoggedIn) {
+        return <Navigate to={"/login"}/>
+    }
+
     return (
         <>
             <Grid container style={{padding: '20px 0px 20px 0px'}}>
@@ -54,7 +58,6 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo}) => {
             <Grid container spacing={5}>
                 {todoListsRender}
             </Grid>
-            <SneakBar />
         </>
     )
 }

@@ -84,8 +84,8 @@ export const changeEntityStatusAC = (todolistId: string, status: StatusTypes) =>
 
 export const getTodolistsTC = (): AppThunk => async (dispatch) => {
     dispatch(setStatusAC('loading'))
-    const todolists = await todolistAPI.getTodolists()
     try {
+        const todolists = await todolistAPI.getTodolists()
         dispatch(setTodolistsAC(todolists))
         dispatch(setStatusAC('succeeded'))
     } catch (err) {
