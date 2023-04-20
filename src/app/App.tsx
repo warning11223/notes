@@ -10,7 +10,7 @@ import LinearProgress from '@mui/material/LinearProgress/LinearProgress';
 import {StatusTypes} from '../reducers/errorReducer';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import {TodolistsList} from '../features/TodolistsList/TodolistList';
-import {Login} from '../components/Login/Login';
+import {Login} from '../features/Login/Login';
 import {SneakBar} from '../features/SneakBar/SneackBar';
 import {useAppDispatch} from './hooks';
 import {authMeTC} from '../reducers/authReducer';
