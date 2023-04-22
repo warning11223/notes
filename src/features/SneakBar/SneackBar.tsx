@@ -23,7 +23,7 @@ export function SneakBar() {
             return;
         }
 
-        dispatch(setErrorAC(null))
+        dispatch(setErrorAC({error: null}))
     };
 
     return (

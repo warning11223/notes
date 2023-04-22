@@ -11,7 +11,7 @@ beforeEach(() => {
 
 test('status should be edited', () => {
 
-    const newState = errorReducer(initialState, setStatusAC('loading'))
+    const newState = errorReducer(initialState, setStatusAC({status: 'loading'}))
 
     expect(newState.status).toBe('loading')
 
@@ -19,7 +19,7 @@ test('status should be edited', () => {
 
 test('error should be correct display', () => {
 
-    const newState = errorReducer(initialState, setErrorAC('some error'))
+    const newState = errorReducer(initialState, setErrorAC({error: 'some error'}))
 
     expect(newState.error).toBe('some error')
 
@@ -27,7 +27,7 @@ test('error should be correct display', () => {
 
 test('loadingTasks should be correct display', () => {
 
-    const newState = errorReducer(initialState, setStatusAC('loadingTasks'))
+    const newState = errorReducer(initialState, setStatusAC({status: 'loadingTasks'}))
 
     expect(newState.status).toBe('loadingTasks')
 

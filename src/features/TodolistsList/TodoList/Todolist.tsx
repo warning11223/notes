@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton/IconButton';
 import Task from './Task/Task';
 import FilterButton from '../../../components/FilterButton/FilterButton';
-import {addTaskTC, setTasksTC} from '../../../reducers/tasksReducer';
+import {addTaskTC} from '../../../reducers/tasksReducer';
 import {changeFilterAC, editTodolistTC, removeTodolistTC, TodoListType} from '../../../reducers/todolistReducer';
 import {useAppDispatch} from '../../../app/hooks';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
@@ -26,12 +26,11 @@ type PropsType = {
 export const Todolist = React.memo((props: PropsType) => {
     const dispatch = useAppDispatch();
     const status = useSelector<RootState, StatusTypes>(state => state.errorReducer.status)
+
     useEffect(() => {
         if (props.demo) {
             return
         }
-
-        //dispatch(setTasksTC(props.todolist.id))
     }, [])
 
     const editTodolistHandler = useCallback((title: string) => {
@@ -47,7 +46,7 @@ export const Todolist = React.memo((props: PropsType) => {
     }, [dispatch, props.todolist.id])
 
     const changeFilterHandler = (filter: FilterValuesType) => {
-        dispatch(changeFilterAC(props.todolist.id, filter))
+        dispatch(changeFilterAC({todolistID: props.todolist.id, filter}))
     }
 
     const filterAll = useCallback(() => changeFilterHandler('all'), []);
@@ -64,7 +63,8 @@ export const Todolist = React.memo((props: PropsType) => {
     }
 
     const filteredTasks = tasksForTodolist.map(t => {
-        return <Task key={t.id} task={t} todolistId={props.todolist.id} todolistEntityStatus={props.todolist.entityStatus}/>
+        return <Task key={t.id} task={t} todolistId={props.todolist.id}
+                     todolistEntityStatus={props.todolist.entityStatus}/>
     })
 
     return <div style={{
@@ -78,7 +78,8 @@ export const Todolist = React.memo((props: PropsType) => {
             <h3>
                 <EditableSpan editCallback={editTodolistHandler}>{props.todolist.title}</EditableSpan>
             </h3>
-            <IconButton color="error" onClick={removeTodolistHandler} disabled={props.todolist.entityStatus === 'loading'}>
+            <IconButton color="error" onClick={removeTodolistHandler}
+                        disabled={props.todolist.entityStatus === 'loading'}>
                 <DeleteIcon
                     style={{cursor: 'pointer'}}
                     fontSize="medium"
@@ -86,11 +87,12 @@ export const Todolist = React.memo((props: PropsType) => {
             </IconButton>
         </div>
 
-        <AddForm placeholder="Add task" addTaskCallback={addTaskHandler} disabled={props.todolist.entityStatus === 'loading'}/>
+        <AddForm placeholder="Add task" addTaskCallback={addTaskHandler}
+                 disabled={props.todolist.entityStatus === 'loading'}/>
 
         <ul className={s.ul}>
             {
-                status === 'loadingTasks' ? <CircularProgress color="warning" /> : filteredTasks
+                status === 'loadingTasks' ? <CircularProgress color="warning"/> : filteredTasks
             }
         </ul>
         <div>

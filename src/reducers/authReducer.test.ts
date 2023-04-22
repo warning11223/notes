@@ -11,7 +11,7 @@ beforeEach(() => {
 
 test('isLoggedIn should be true', () => {
 
-    const newState = authReducer(initialState, authAC(true))
+    const newState = authReducer(initialState, authAC({value: true}))
 
     expect(newState.isLoggedIn).toBe(true)
 

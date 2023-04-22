@@ -3,38 +3,36 @@ import {authAPI, AuthRequestType, ResultCode} from '../api/todolist-api';
 import {handlerServerNetworkError, handleServerAppError} from '../utils/error-utils';
 import {setStatusAC} from './errorReducer';
 import {clearData} from './todolistReducer';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export type InitialAuthReducerStateType = typeof initialState
-
-export type ActionsAuthReducerType = AuthACType
 
 const initialState = {
     isLoggedIn: false
 }
 
-export const authReducer = (state: InitialAuthReducerStateType = initialState, action: ActionsAuthReducerType): InitialAuthReducerStateType => {
-    switch (action.type) {
-        case 'LOGIN':
-            return {...state, isLoggedIn: action.value}
-        default:
-            return state
+const loginSlice = createSlice({
+    name: 'login',
+    initialState,
+    reducers: {
+        authAC: (state, action: PayloadAction<{ value: boolean }>) => {
+            state.isLoggedIn = action.payload.value
+        }
     }
-}
-
-type AuthACType = ReturnType<typeof authAC>
-
-export const authAC = (value: boolean) => ({
-    type: 'LOGIN', value
 })
 
+export const { authAC } = loginSlice.actions
+
+export const authReducer = loginSlice.reducer
+
 export const loginTC = (data: AuthRequestType): AppThunk => dispatch => {
-    dispatch(setStatusAC('initialized'))
+    dispatch(setStatusAC({status: 'initialized'}))
 
     authAPI.login(data)
         .then(res => {
             if (res.data.resultCode === ResultCode.OK) {
-                dispatch(authAC(true))
-                dispatch(setStatusAC('succeeded'))
+                dispatch(authAC({value: true}))
+                dispatch(setStatusAC({status: 'succeeded'}))
             } else {
                 handleServerAppError(res.data, dispatch)
             }
@@ -45,13 +43,13 @@ export const loginTC = (data: AuthRequestType): AppThunk => dispatch => {
 }
 
 export const logoutTC = (): AppThunk => dispatch => {
-    dispatch(setStatusAC('initialized'))
+    dispatch(setStatusAC({status: 'initialized'}))
 
     authAPI.logout()
         .then(res => {
             if (res.data.resultCode === ResultCode.OK) {
-                dispatch(authAC(false))
-                dispatch(setStatusAC('succeeded'))
+                dispatch(authAC({value: false}))
+                dispatch(setStatusAC({status: 'succeeded'}))
                 dispatch(clearData())
             } else {
                 handleServerAppError(res.data, dispatch)
@@ -63,13 +61,13 @@ export const logoutTC = (): AppThunk => dispatch => {
 }
 
 export const authMeTC = (): AppThunk => dispatch => {
-    dispatch(setStatusAC('initialized'))
+    dispatch(setStatusAC({status: 'initialized'}))
 
     authAPI.me()
         .then(res => {
             if (res.data.resultCode === ResultCode.OK) {
-                dispatch(authAC(true))
-                dispatch(setStatusAC('succeeded'))
+                dispatch(authAC({value: true}))
+                dispatch(setStatusAC({status: 'succeeded'}))
             } else {
                 handleServerAppError(res.data, dispatch)
             }

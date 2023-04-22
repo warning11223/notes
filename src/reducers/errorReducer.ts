@@ -1,34 +1,27 @@
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+
 export type StatusTypes = 'idle' | 'loading' | 'succeeded' | 'failed' | 'loadingTasks' | 'initialized'
 
 export type InitialStateType = typeof initialState
-
-export type ActionErrorTypes = SetStatusType | SetErrorType
 
 const initialState = {
     status: 'idle' as StatusTypes,
     error: null as null | string,
 }
 
-export const errorReducer = (state = initialState, action: ActionErrorTypes): InitialStateType => {
-    switch (action.type) {
-        case 'SET_STATUS': {
-            return {...state, status: action.status}
+const errorSlice = createSlice({
+    name: 'error',
+    initialState,
+    reducers: {
+        setStatusAC: (state, action: PayloadAction<{ status: StatusTypes }>) => {
+            state.status = action.payload.status;
+        },
+        setErrorAC: (state, action: PayloadAction<{ error: string | null }>) => {
+            state.error = action.payload.error;
         }
-        case 'SET_ERROR': {
-            return {...state, error: action.error}
-        }
-        default:
-            return state;
     }
-}
+})
 
-export type SetStatusType = ReturnType<typeof setStatusAC>
-export type SetErrorType = ReturnType<typeof setErrorAC>
+export const { setStatusAC, setErrorAC } = errorSlice.actions
 
-
-export const setStatusAC = (status: StatusTypes) => ({
-    type: 'SET_STATUS', status
-} as const)
-export const setErrorAC = (error: string | null) => ({
-    type: 'SET_ERROR', error
-} as const)
+export const errorReducer = errorSlice.reducer
