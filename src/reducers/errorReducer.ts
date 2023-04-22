@@ -1,4 +1,4 @@
-export type StatusTypes = 'idle' | 'loading' | 'succeeded' | 'failed' | 'loadingTasks' | 'loadingApp'
+export type StatusTypes = 'idle' | 'loading' | 'succeeded' | 'failed' | 'loadingTasks' | 'initialized'
 
 export type InitialStateType = typeof initialState
 

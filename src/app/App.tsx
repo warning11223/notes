@@ -64,7 +64,7 @@ const App: React.FC<AppPropsType> = ({demo}) => {
             </ThemeProvider>
 
             {
-                status === 'loadingApp'
+                status === 'initialized'
                     ? <div style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
                         <CircularProgress disableShrink color={'warning'} size={80}/>
                     </div>

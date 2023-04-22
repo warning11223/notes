@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 
 export type ResponseType<D> = {
     resultCode: number
@@ -136,7 +136,7 @@ export const todolistAPI = {
 
 export const authAPI = {
     login(data: AuthRequestType) {
-        return instance.post<ResponseType<{ userId: number }>>('auth/login', data)
+        return instance.post<ResponseType<{ userId: number }>, AxiosResponse<ResponseType<{ userId: number }>, AuthRequestType>>('auth/login', data)
     },
     logout() {
         return instance.delete<ResponseType<{}>>('auth/login')

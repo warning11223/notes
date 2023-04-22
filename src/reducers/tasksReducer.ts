@@ -1,9 +1,9 @@
 import {v1} from 'uuid';
-import {AddTodoListActionType, RemoveTodoListActionType, SetTodolistsType} from './todolistReducer';
+import {AddTodoListActionType, ClearDataType, RemoveTodoListActionType, SetTodolistsType} from './todolistReducer';
 import {ResultCode, TaskResponseType, todolistAPI} from '../api/todolist-api';
 import {AppThunk, RootState} from '../app/store';
 import {Dispatch} from 'redux';
-import { setStatusAC} from './errorReducer';
+import {setStatusAC} from './errorReducer';
 import {handlerServerNetworkError, handleServerAppError} from '../utils/error-utils';
 
 export type ActionsTasksType =
@@ -14,7 +14,8 @@ export type ActionsTasksType =
     | AddTodoListActionType
     | AddInitialArrayType
     | SetTasksACType
-    | SetTodolistsType;
+    | SetTodolistsType
+    | ClearDataType
 
 export type TasksType = {
     [key: string]: TaskResponseType[]
@@ -85,6 +86,8 @@ export const tasksReducer = (state = initialState, action: ActionsTasksType): Ta
             })
 
             return copyState;
+        case 'CLEAR_DATA':
+            return {}
         default:
             return state;
     }
@@ -115,7 +118,6 @@ export const addInitialAC = (todoListId: string) => ({
 export const setTasksAC = (todolistID: string, tasks: TaskResponseType[]) => ({
     type: 'SET_TASKS', payload: {tasks, todolistID}
 }) as const
-
 
 export const setTasksTC = (todolistID: string): AppThunk => dispatch => {
     dispatch(setStatusAC('loadingTasks'))

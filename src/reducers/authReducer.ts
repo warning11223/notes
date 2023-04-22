@@ -2,6 +2,7 @@ import {AppThunk} from '../app/store';
 import {authAPI, AuthRequestType, ResultCode} from '../api/todolist-api';
 import {handlerServerNetworkError, handleServerAppError} from '../utils/error-utils';
 import {setStatusAC} from './errorReducer';
+import {clearData} from './todolistReducer';
 
 export type InitialAuthReducerStateType = typeof initialState
 
@@ -27,7 +28,7 @@ export const authAC = (value: boolean) => ({
 })
 
 export const loginTC = (data: AuthRequestType): AppThunk => dispatch => {
-    dispatch(setStatusAC('loadingApp'))
+    dispatch(setStatusAC('initialized'))
 
     authAPI.login(data)
         .then(res => {
@@ -44,13 +45,14 @@ export const loginTC = (data: AuthRequestType): AppThunk => dispatch => {
 }
 
 export const logoutTC = (): AppThunk => dispatch => {
-    dispatch(setStatusAC('loadingApp'))
+    dispatch(setStatusAC('initialized'))
 
     authAPI.logout()
         .then(res => {
             if (res.data.resultCode === ResultCode.OK) {
                 dispatch(authAC(false))
                 dispatch(setStatusAC('succeeded'))
+                dispatch(clearData())
             } else {
                 handleServerAppError(res.data, dispatch)
             }
@@ -61,7 +63,7 @@ export const logoutTC = (): AppThunk => dispatch => {
 }
 
 export const authMeTC = (): AppThunk => dispatch => {
-    dispatch(setStatusAC('loadingApp'))
+    dispatch(setStatusAC('initialized'))
 
     authAPI.me()
         .then(res => {

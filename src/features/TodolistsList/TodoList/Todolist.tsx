@@ -31,7 +31,7 @@ export const Todolist = React.memo((props: PropsType) => {
             return
         }
 
-        dispatch(setTasksTC(props.todolist.id))
+        //dispatch(setTasksTC(props.todolist.id))
     }, [])
 
     const editTodolistHandler = useCallback((title: string) => {

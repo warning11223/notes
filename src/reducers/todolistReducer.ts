@@ -1,7 +1,7 @@
 import {FilterValuesType} from '../app/App';
 import {ResultCode, todolistAPI, TodolistResponseType} from '../api/todolist-api';
 import {AppThunk} from '../app/store';
-import {addInitialAC} from './tasksReducer';
+import {addInitialAC, setTasksTC} from './tasksReducer';
 import {setStatusAC, StatusTypes} from './errorReducer';
 import {handlerServerNetworkError, handleServerAppError} from '../utils/error-utils';
 import axios from 'axios';
@@ -13,6 +13,7 @@ export type ActionsTodolistsTypes =
     | ChangeFilterType
     | SetTodolistsType
     | ChangeEntityStatusACType
+    | ClearDataType
 
 export type TodoListType = TodolistResponseType & {
     filter: FilterValuesType
@@ -42,6 +43,8 @@ export const todolistReducer = (state = initialState, action: ActionsTodolistsTy
             return action.payload.todolists.map(item => ({...item, filter: 'all', entityStatus: 'idle'}))
         case 'SET_ENTITY_STATUS':
             return state.map(item => item.id === action.todolistId ? {...item, entityStatus: action.status} : item)
+        case 'CLEAR_DATA':
+            return []
         default:
             return state;
     }
@@ -52,7 +55,8 @@ export type RemoveTodoListActionType = ReturnType<typeof removeTodolistAC>;
 export type EditTodoListActionType = ReturnType<typeof editTodolistAC>;
 export type ChangeFilterType = ReturnType<typeof changeFilterAC>;
 export type SetTodolistsType = ReturnType<typeof setTodolistsAC>;
-export type ChangeEntityStatusACType = ReturnType<typeof changeEntityStatusAC>
+export type ChangeEntityStatusACType = ReturnType<typeof changeEntityStatusAC>;
+export type ClearDataType = ReturnType<typeof clearData>;
 
 // action creators
 
@@ -80,19 +84,29 @@ export const changeEntityStatusAC = (todolistId: string, status: StatusTypes) =>
     type: 'SET_ENTITY_STATUS', todolistId, status
 } as const)
 
+export const clearData = () => ({
+    type: 'CLEAR_DATA'
+} as const)
+
 //thunk creators
 
-export const getTodolistsTC = (): AppThunk => async (dispatch) => {
+export const getTodolistsTC = (): AppThunk => (dispatch) => {
     dispatch(setStatusAC('loading'))
-    try {
-        const todolists = await todolistAPI.getTodolists()
-        dispatch(setTodolistsAC(todolists))
-        dispatch(setStatusAC('succeeded'))
-    } catch (err) {
-        if (axios.isAxiosError<{message: string}>(err)) {
+
+    todolistAPI.getTodolists()
+        .then(todolists => {
+            dispatch(setTodolistsAC(todolists))
+            dispatch(setStatusAC('succeeded'))
+            return todolists
+        })
+        .then(todolists => {
+            todolists.forEach(item => {
+                dispatch(setTasksTC(item.id))
+            })
+        })
+        .catch(err => {
             handlerServerNetworkError(err, dispatch)
-        }
-    }
+        })
 }
 export const removeTodolistTC = (todolistID: string): AppThunk => dispatch => {
     dispatch(setStatusAC('loading'))

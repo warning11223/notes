@@ -77,7 +77,7 @@ export const Login = () => {
                             color={'warning'}
                             {...formik.getFieldProps('email')}
                         />
-                        {formik.errors.email ? <div style={{color: 'red'}}>{formik.errors.email}</div> : null}
+                        {formik.errors.email && formik.touched.email ? <div style={{color: 'red'}}>{formik.errors.email}</div> : null}
                         <TextField
                             id="password"
                             type="password"
@@ -86,7 +86,7 @@ export const Login = () => {
                             color={'warning'}
                             {...formik.getFieldProps('password')}
                         />
-                        {formik.errors.password ? <div style={{color: 'red'}}>{formik.errors.password}</div> : null}
+                        {formik.errors.password && formik.touched.password ? <div style={{color: 'red'}}>{formik.errors.password}</div> : null}
                         <FormControlLabel
                             id="rememberMe"
                             label={'Remember me'}
