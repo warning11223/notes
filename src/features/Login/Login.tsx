@@ -9,8 +9,9 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {useFormik} from 'formik';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {loginTC} from '../../reducers/authReducer';
-import { Navigate } from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
+import {selectIsLoggedIn} from '../../selectors/authSelectors';
+import {authThunks} from '../../reducers/authReducer';
 
 type FormikErrorType = {
     email?: string
@@ -20,7 +21,7 @@ type FormikErrorType = {
 
 export const Login = () => {
     const dispatch = useAppDispatch()
-    const isLoggedIn = useAppSelector(state => state.authReducer.isLoggedIn)
+    const isLoggedIn = useAppSelector(selectIsLoggedIn)
 
     const formik = useFormik({
         initialValues: {
@@ -29,10 +30,12 @@ export const Login = () => {
             rememberMe: false
         },
         onSubmit: values => {
-            dispatch(loginTC({
-                email: values.email,
-                password: values.password,
-                rememberMe: values.rememberMe
+            dispatch(authThunks.login({
+                data: {
+                    email: values.email,
+                    password: values.password,
+                    rememberMe: values.rememberMe
+                }
             }))
             formik.resetForm()
         },
@@ -52,7 +55,7 @@ export const Login = () => {
     })
 
     if (isLoggedIn) {
-        return <Navigate to={"/"}/>
+        return <Navigate to={'/'}/>
     }
 
     return <Grid container justifyContent={'center'}>
@@ -77,7 +80,8 @@ export const Login = () => {
                             color={'warning'}
                             {...formik.getFieldProps('email')}
                         />
-                        {formik.errors.email && formik.touched.email ? <div style={{color: 'red'}}>{formik.errors.email}</div> : null}
+                        {formik.errors.email && formik.touched.email ?
+                            <div style={{color: 'red'}}>{formik.errors.email}</div> : null}
                         <TextField
                             id="password"
                             type="password"
@@ -86,7 +90,8 @@ export const Login = () => {
                             color={'warning'}
                             {...formik.getFieldProps('password')}
                         />
-                        {formik.errors.password && formik.touched.password ? <div style={{color: 'red'}}>{formik.errors.password}</div> : null}
+                        {formik.errors.password && formik.touched.password ?
+                            <div style={{color: 'red'}}>{formik.errors.password}</div> : null}
                         <FormControlLabel
                             id="rememberMe"
                             label={'Remember me'}

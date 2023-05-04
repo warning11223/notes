@@ -6,16 +6,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton/IconButton';
 import Task from './Task/Task';
 import FilterButton from '../../../components/FilterButton/FilterButton';
-import {addTaskTC} from '../../../reducers/tasksReducer';
-import {changeFilterAC, editTodolistTC, removeTodolistTC, TodoListType} from '../../../reducers/todolistReducer';
+import {changeFilterAC, todolistThunks, TodoListType} from '../../../reducers/todolistReducer';
 import {useAppDispatch} from '../../../app/hooks';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../../app/store';
-import {StatusTypes} from '../../../reducers/errorReducer';
 import {TaskResponseType, TaskStatuses} from '../../../api/todolist-api';
 
 import s from './TodoList.module.css';
+import {selectStatus} from '../../../selectors/errorSelectors';
+import {tasksThunks} from '../../../reducers/tasksReducer';
 
 type PropsType = {
     tasks: TaskResponseType[]
@@ -25,7 +24,7 @@ type PropsType = {
 
 export const Todolist = React.memo((props: PropsType) => {
     const dispatch = useAppDispatch();
-    const status = useSelector<RootState, StatusTypes>(state => state.errorReducer.status)
+    const status = useSelector(selectStatus)
 
     useEffect(() => {
         if (props.demo) {
@@ -34,15 +33,15 @@ export const Todolist = React.memo((props: PropsType) => {
     }, [])
 
     const editTodolistHandler = useCallback((title: string) => {
-        dispatch(editTodolistTC(props.todolist.id, title))
+        dispatch(todolistThunks.editTodolist({todolistID: props.todolist.id, title}))
     }, [dispatch, props.todolist.id])
 
     const addTaskHandler = useCallback((title: string) => {
-        dispatch(addTaskTC(props.todolist.id, title))
+        dispatch(tasksThunks.addTask({taskTitle: title, todolistID: props.todolist.id}))
     }, [dispatch, props.todolist.id])
 
     const removeTodolistHandler = useCallback(() => {
-        dispatch(removeTodolistTC(props.todolist.id))
+        dispatch(todolistThunks.removeTodolist({todolistID: props.todolist.id}))
     }, [dispatch, props.todolist.id])
 
     const changeFilterHandler = (filter: FilterValuesType) => {

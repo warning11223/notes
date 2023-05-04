@@ -1,25 +1,19 @@
 import {v1} from 'uuid';
-
-import {
-    addTaskAC,
-    editTaskAC,
-    deleteTaskAC,
-    setTasksAC,
-    tasksReducer,
-    TasksType
-} from './tasksReducer';
-import {addTodolistAC, removeTodolistAC, setTodolistsAC, TodoListType} from './todolistReducer';
+import {tasksReducer, tasksThunks, TasksType} from './tasksReducer';
+import {todolistThunks, TodoListType} from './todolistReducer';
 import {TaskStatuses} from '../api/todolist-api';
 
 const todoListId1 = v1()
 const todoListId2 = v1()
+const taskId = v1()
+
 let tasks: TasksType = {}
 
 beforeEach(() => {
     tasks = {
         [todoListId1]: [
             {
-                id: v1(),
+                id: '1',
                 title: 'HTML&CSS',
                 completed: true,
                 status: 1,
@@ -117,7 +111,10 @@ beforeEach(() => {
 
 test('task should be removed from tasks', () => {
     const taskId = tasks[todoListId1][0].id;
-    const newTasks = tasksReducer(tasks, deleteTaskAC({todolistID: todoListId1, taskID: taskId}))
+
+    const action = tasksThunks.deleteTask.fulfilled({taskID: taskId, todolistID: todoListId1}, 'requestId', {taskID: taskId, todolistID: todoListId1})
+
+    const newTasks = tasksReducer(tasks, action)
 
     expect(newTasks[todoListId1].length).toBe(4)
     expect(newTasks[todoListId1][0].title).toBe('JS')
@@ -140,38 +137,60 @@ test('task should be added to todolist', () => {
         addedDate: ''
     };
 
-    const newTasks = tasksReducer(tasks, addTaskAC({task: newTask}))
+    const action = tasksThunks.addTask.fulfilled({
+        task: newTask
+    }, 'requestId', {todolistID: todoListId1, taskTitle: 'new task'})
+
+    const newTasks = tasksReducer(tasks, action)
 
     expect(newTasks[todoListId1].length).toBe(6)
     expect(newTasks[todoListId1][0].title).toBe('new task')
 })
 
 test('checked value should be changed to opposite', () => {
-    const taskId = tasks[todoListId1][1].id;
-    const newTasks = tasksReducer(tasks, editTaskAC({todolistID: todoListId1, taskID: taskId, model: {status: TaskStatuses.New}}))
+    const args = { todolistID: todoListId1, taskID: '1', taskModel: { status: TaskStatuses.New } }
+    const action = tasksThunks.editTask.fulfilled(args, 'requiestId', args)
+
+
+    const newTasks = tasksReducer(tasks, action)
 
     expect(newTasks[todoListId1].length).toBe(5)
-    expect(newTasks[todoListId1][1].status).toBe(TaskStatuses.New)
+    expect(newTasks[todoListId1][0].status).toBe(TaskStatuses.New)
 })
 
 test('title value of task should be edited', () => {
     const taskId = tasks[todoListId1][1].id;
-    const newTasks = tasksReducer(tasks, editTaskAC({todolistID: todoListId1, taskID: taskId, model: {title: 'NEW VALUE'}}))
+    const args = { todolistID: todoListId1, taskID: taskId, taskModel: { title: 'new title' } }
+    const action = tasksThunks.editTask.fulfilled(args, 'requiestId', args)
 
-    expect(newTasks[todoListId1][1].title).toBe('NEW VALUE')
+    const newTasks = tasksReducer(tasks, action)
+
+    expect(newTasks[todoListId1][1].title).toBe('new title')
     expect(newTasks[todoListId1].length).toBe(5)
 })
 
 test('todolist should be removed', () => {
-    const newTasks = tasksReducer(tasks, removeTodolistAC({todolistID: todoListId2}))
+    const action = todolistThunks.removeTodolist.fulfilled({todolistID: todoListId2}, 'requestId', {todolistID: todoListId2})
+
+    const newTasks = tasksReducer(tasks, action)
 
     expect(newTasks[todoListId2]).toBeUndefined();
     expect(newTasks[todoListId1].length).toBe(5);
 })
 
 test('todolist should be added', () => {
-    const newTodolist: TodoListType = {id: v1(), title: 'new todolist', filter: 'all', order: 0, addedDate: '', entityStatus: 'idle'};
-    const newTasks = tasksReducer(tasks, addTodolistAC({todolist: newTodolist}))
+    const newTodolist: TodoListType = {
+        id: v1(),
+        title: 'new todolist',
+        filter: 'all',
+        order: 0,
+        addedDate: '',
+        entityStatus: 'idle'
+    };
+
+    const action = todolistThunks.createTodolist.fulfilled({todolist: newTodolist}, 'requestId', todoListId1)
+
+    const newTasks = tasksReducer(tasks, action)
 
     const keys = Object.keys(newTasks);
     const newKey = keys.find(item => item !== todoListId1 && item !== todoListId2);
@@ -181,63 +200,76 @@ test('todolist should be added', () => {
 })
 
 test('get tasks', () => {
-    const newTasks: TasksType = tasksReducer(tasks, setTasksAC({
-        tasks: [
-            {
-                id: v1(),
-                title: 'Milk',
-                completed: true,
-                status: 1,
-                todoListId: todoListId1,
-                deadline: '',
-                description: '',
-                priority: 0,
-                order: 2,
-                startDate: '',
-                addedDate: ''
-            }
-        ],
+    const tasks1 = [
+        {
+            id: v1(),
+            title: 'Milk',
+            completed: true,
+            status: 1,
+            todoListId: todoListId1,
+            deadline: '',
+            description: '',
+            priority: 0,
+            order: 2,
+            startDate: '',
+            addedDate: ''
+        }
+    ];
+
+    const action = tasksThunks.fetchTasks.fulfilled({
+        tasks: tasks1,
         todolistID: todoListId1
-    }))
+    }, 'requestId', todoListId1)
+    const newTasks: TasksType = tasksReducer(tasks, action)
 
     expect(newTasks[todoListId1].length).toBe(1)
     expect(newTasks[todoListId1][0].title).toBe('Milk')
 })
 
 test('empty arrays should be added when we set todolists', () => {
-    const newTasks: TasksType = tasksReducer(tasks, setTodolistsAC({todolists: [{id: todoListId1, title: 'What to buy', addedDate: '', order: 0, }]}))
+    const todolists = [{
+        id: todoListId1,
+        title: 'string',
+        addedDate: 'string',
+        order: 1
+    }]
+
+    const action = todolistThunks.getTodolists.fulfilled({todolists}, 'requestId')
+
+    const newTasks: TasksType = tasksReducer(tasks, action)
 
     expect(newTasks[todoListId1]).toStrictEqual([])
 })
 
-test('tasks should be added for todolist', () => {
-    const newTasks: TasksType = tasksReducer(tasks, setTasksAC({
-        tasks: [
-            {
-                id: v1(),
-                title: 'Milk',
-                completed: true,
-                status: 1,
-                todoListId: todoListId1,
-                deadline: '',
-                description: '',
-                priority: 0,
-                order: 2,
-                startDate: '',
-                addedDate: ''
-            }
-        ],
+/*test('tasks should be added for todolist', () => {
+    const tasks1 = [
+        {
+            id: v1(),
+            title: 'Milk',
+            completed: true,
+            status: 1,
+            todoListId: todoListId1,
+            deadline: '',
+            description: '',
+            priority: 0,
+            order: 2,
+            startDate: '',
+            addedDate: ''
+        }
+    ]
+
+    const action = tasksThunks.fetchTasks.fulfilled({
+        tasks: tasks1,
         todolistID: todoListId1
-    }))
+    }, 'requestId', todoListId1)
+
+    const newTasks: TasksType = tasksReducer(tasks, action)
 
     expect(newTasks[todoListId1].length).toBe(1)
     expect(newTasks[todoListId1][0].title).toBe('Milk')
-})
+})*/
 
 test('task should be edited', () => {
-    const todoListId1 = v1()
-    const taskId = v1()
-
     const tasks: TasksType = ({
         [todoListId1]: [
             {
@@ -255,8 +287,12 @@ test('task should be edited', () => {
             },
         ]
     })
-    const newTasks: TasksType = tasksReducer(tasks, editTaskAC({todolistID: todoListId1, taskID: taskId, model: {title: 'hello world'}}))
 
-    expect(newTasks[todoListId1][0].title).toBe('hello world')
+    const args = { todolistID: todoListId1, taskID: taskId, taskModel: { title: 'hello' } }
+    const action = tasksThunks.editTask.fulfilled(args, 'requiestId', args)
+
+    const newTasks: TasksType = tasksReducer(tasks, action)
+
+    expect(newTasks[todoListId1][0].title).toBe('hello')
     expect(newTasks[todoListId1].length).toBe(1)
 })

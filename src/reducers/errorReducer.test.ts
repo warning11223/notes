@@ -1,4 +1,4 @@
-import {errorReducer, InitialStateType, setErrorAC, setStatusAC} from './errorReducer';
+import {errorActions, errorReducer, InitialStateType} from './errorReducer';
 
 let initialState: InitialStateType;
 
@@ -11,7 +11,7 @@ beforeEach(() => {
 
 test('status should be edited', () => {
 
-    const newState = errorReducer(initialState, setStatusAC({status: 'loading'}))
+    const newState = errorReducer(initialState, errorActions.setStatusAC({status: 'loading'}))
 
     expect(newState.status).toBe('loading')
 
@@ -19,7 +19,7 @@ test('status should be edited', () => {
 
 test('error should be correct display', () => {
 
-    const newState = errorReducer(initialState, setErrorAC({error: 'some error'}))
+    const newState = errorReducer(initialState, errorActions.setErrorAC({error: 'some error'}))
 
     expect(newState.error).toBe('some error')
 
@@ -27,7 +27,7 @@ test('error should be correct display', () => {
 
 test('loadingTasks should be correct display', () => {
 
-    const newState = errorReducer(initialState, setStatusAC({status: 'loadingTasks'}))
+    const newState = errorReducer(initialState, errorActions.setStatusAC({status: 'loadingTasks'}))
 
     expect(newState.status).toBe('loadingTasks')
 

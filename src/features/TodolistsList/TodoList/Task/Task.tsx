@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useCallback} from 'react';
 import s from '../TodoList.module.css';
 import Checkbox from '@mui/material/Checkbox/Checkbox';
-import {deleteTaskTC, editTaskTC} from '../../../../reducers/tasksReducer';
+import {tasksThunks} from '../../../../reducers/tasksReducer';
 import EditableSpan from '../../../../components/EditableSpan/EditableSpan';
 import IconButton from '@mui/material/IconButton/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,11 +19,11 @@ const Task: React.FC<TaskProps> = React.memo(({task, todolistId, todolistEntityS
     const dispatch = useAppDispatch();
 
     const editTaskHandler = useCallback((title: string) => {
-        dispatch(editTaskTC(todolistId, task.id, {title}))
+        dispatch(tasksThunks.editTask({taskID: task.id, taskModel: { title }, todolistID: todolistId}))
     }, [dispatch, todolistId, task.id])
 
     const deleteTaskHandler = () => {
-        dispatch(deleteTaskTC(todolistId, task.id))
+        dispatch(tasksThunks.deleteTask({taskID: task.id, todolistID: todolistId}))
     }
 
     /*const checkboxHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +33,7 @@ const Task: React.FC<TaskProps> = React.memo(({task, todolistId, todolistEntityS
     const changeCheckedHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const status = e.currentTarget.checked ? 2 : 0;
 
-        dispatch(editTaskTC(todolistId, task.id, {status}))
+        dispatch(tasksThunks.editTask({taskID: task.id, taskModel: { status }, todolistID: todolistId}))
     }, [dispatch,todolistId, task.id])
 
     return (

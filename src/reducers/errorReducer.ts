@@ -6,7 +6,7 @@ export type InitialStateType = typeof initialState
 
 const initialState = {
     status: 'idle' as StatusTypes,
-    error: null as null | string,
+    error: null as string | null,
 }
 
 const errorSlice = createSlice({
@@ -22,6 +22,6 @@ const errorSlice = createSlice({
     }
 })
 
-export const { setStatusAC, setErrorAC } = errorSlice.actions
+export const errorActions = errorSlice.actions
 
 export const errorReducer = errorSlice.reducer

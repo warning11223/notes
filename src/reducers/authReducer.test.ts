@@ -1,5 +1,4 @@
-import {errorReducer, InitialStateType, setStatusAC} from './errorReducer';
-import {authAC, authReducer, InitialAuthReducerStateType} from './authReducer';
+import {authReducer, authThunks, InitialAuthReducerStateType} from './authReducer';
 
 let initialState: InitialAuthReducerStateType;
 
@@ -10,8 +9,9 @@ beforeEach(() => {
 })
 
 test('isLoggedIn should be true', () => {
+    const action = authThunks.login.fulfilled({value: true}, 'req', {data: {email: '', rememberMe: true, password: '', captcha: ''}})
 
-    const newState = authReducer(initialState, authAC({value: true}))
+    const newState = authReducer(initialState, action)
 
     expect(newState.isLoggedIn).toBe(true)
 

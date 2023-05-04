@@ -5,16 +5,15 @@ import {ThemeProvider} from '@mui/material/styles';
 import Container from '@mui/material/Container/Container';
 import ButtonAppBar from '../components/ButtonAppBar/ButtonAppBar';
 import {useSelector} from 'react-redux';
-import {RootState} from './store';
 import LinearProgress from '@mui/material/LinearProgress/LinearProgress';
-import {StatusTypes} from '../reducers/errorReducer';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import {TodolistsList} from '../features/TodolistsList/TodolistList';
 import {Login} from '../features/Login/Login';
 import {SneakBar} from '../features/SneakBar/SneackBar';
 import {useAppDispatch} from './hooks';
-import {authMeTC} from '../reducers/authReducer';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
+import {selectStatus} from '../selectors/errorSelectors';
+import {authThunks} from '../reducers/authReducer';
 
 export type FilterValuesType = 'all' | 'active' | 'completed';
 
@@ -50,10 +49,10 @@ const router = createBrowserRouter([
 
 const App: React.FC<AppPropsType> = ({demo}) => {
     const dispatch = useAppDispatch()
-    const status = useSelector<RootState, StatusTypes>(state => state.errorReducer.status)
+    const status = useSelector(selectStatus)
 
     useEffect(() => {
-        dispatch(authMeTC())
+        dispatch(authThunks.authMe())
     }, []);
 
     return (
@@ -72,7 +71,6 @@ const App: React.FC<AppPropsType> = ({demo}) => {
                         <RouterProvider router={router}/>
                     </Container>
             }
-
 
             <SneakBar/>
         </div>

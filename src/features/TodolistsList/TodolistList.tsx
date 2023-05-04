@@ -1,12 +1,14 @@
 import React, {useCallback, useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {RootState} from '../../app/store';
-import {createTodolistTC, getTodolistsTC} from '../../reducers/todolistReducer';
+import {todolistThunks} from '../../reducers/todolistReducer';
 import Grid from '@mui/material/Grid/Grid';
 import Paper from '@mui/material/Paper/Paper';
 import {Todolist} from './TodoList/Todolist';
 import AddForm from '../../components/AddForm/AddForm';
 import {Navigate} from 'react-router-dom';
+import {selectTodolists} from '../../selectors/todolistSelectors';
+import {selectTasks} from '../../selectors/tasksSelectors';
+import {selectIsLoggedIn} from '../../selectors/authSelectors';
 
 type TodolistsListPropsType = {
     demo?: boolean
@@ -14,20 +16,20 @@ type TodolistsListPropsType = {
 
 export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo}) => {
     const dispatch = useAppDispatch();
-    const todolists = useAppSelector((state: RootState) => state.todolistReducer);
-    const tasks = useAppSelector(state => state.tasksReducer)
-    const isLoggedIn = useAppSelector(state => state.authReducer.isLoggedIn)
+    const todolists = useAppSelector(selectTodolists);
+    const tasks = useAppSelector(selectTasks)
+    const isLoggedIn = useAppSelector(selectIsLoggedIn)
 
     useEffect(() => {
         if (demo || !isLoggedIn) {
             return
         }
 
-        dispatch(getTodolistsTC())
+        dispatch(todolistThunks.getTodolists())
     }, [])
 
     const addTodoList = useCallback((title: string) => {
-        dispatch(createTodolistTC(title));
+        dispatch(todolistThunks.createTodolist(title));
     }, [dispatch])
 
     const todoListsRender = todolists.map(item => {
@@ -46,8 +48,21 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo}) => {
         )
     })
 
+    const emptyTodolists = <Grid item xs={3.5} style={{margin: '0 auto'}}>
+        <Paper elevation={3} style={{
+            width: '400px',
+            padding: '40px 20px',
+            textAlign: 'center',
+            fontSize: '30px',
+            backgroundColor: '#ffa726',
+            color: '#ffffff'
+        }}>
+            'Empty! Add new todolist'
+        </Paper>
+    </Grid>
+
     if (!isLoggedIn) {
-        return <Navigate to={"/login"}/>
+        return <Navigate to={'/login'}/>
     }
 
     return (
@@ -56,7 +71,9 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo}) => {
                 <AddForm placeholder="Add todolist" addTaskCallback={addTodoList}/>
             </Grid>
             <Grid container spacing={5}>
-                {todoListsRender}
+                {
+                    !todolists.length ? emptyTodolists : todoListsRender
+                }
             </Grid>
         </>
     )

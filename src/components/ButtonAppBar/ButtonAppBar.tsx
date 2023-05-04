@@ -7,14 +7,15 @@ import Typography from '@mui/material/Typography/Typography';
 import Button from '@mui/material/Button/Button';
 import Box from '@mui/material/Box/Box';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {logoutTC} from '../../reducers/authReducer';
+import {selectIsLoggedIn} from '../../selectors/authSelectors';
+import {authThunks} from '../../reducers/authReducer';
 
 const ButtonAppBar = () => {
     const dispatch = useAppDispatch()
-    const isLoggedIn = useAppSelector(state => state.authReducer.isLoggedIn)
+    const isLoggedIn = useAppSelector(selectIsLoggedIn)
 
     const logoutHandler = () => {
-        dispatch(logoutTC())
+        dispatch(authThunks.logout())
     }
 
     return (

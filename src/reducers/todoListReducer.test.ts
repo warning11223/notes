@@ -1,17 +1,10 @@
 import {v1} from 'uuid';
-
-import {
-    addTodolistAC, changeEntityStatusAC,
-    changeFilterAC,
-    editTodolistAC,
-    removeTodolistAC, setTodolistsAC,
-    todolistReducer,
-    TodoListType
-} from './todolistReducer';
-import {errorReducer} from './errorReducer';
+import {changeEntityStatusAC, changeFilterAC, todolistReducer, todolistThunks, TodoListType} from './todolistReducer';
+import {tasksThunks} from './tasksReducer';
 
 const todoListId1 = v1()
 const todoListId2 = v1()
+
 let todoLists: TodoListType[] = []
 
 beforeEach(() => {
@@ -24,17 +17,17 @@ beforeEach(() => {
 test('todolistReducer should add new todolist', () => {
     //action
     const newTodolist: TodoListType = {id: v1(), title: 'new todolist', filter: 'all', addedDate: '', order: 0, entityStatus: 'idle'};
-    const action = addTodolistAC({todolist: newTodolist})
+    const action = todolistThunks.createTodolist.fulfilled({todolist: newTodolist}, 'requestId', todoListId1)
     const newState = todolistReducer(todoLists, action);
 
     //expectation
-
     expect(newState.length).toBe(3)
     expect(newState[0].title).toBe('new todolist')
 })
 
 test('todolistReducer should remove todolist', () => {
-    const action = removeTodolistAC({todolistID: todoListId1})
+    const action = todolistThunks.removeTodolist.fulfilled({todolistID: todoListId1}, 'requestId', {todolistID: todoListId1})
+
     const newState = todolistReducer(todoLists, action)
 
     expect(newState.length).toBe(1)
@@ -42,7 +35,8 @@ test('todolistReducer should remove todolist', () => {
 })
 
 test('todolistReducer should edit title of todolist', () => {
-    const action = editTodolistAC({title: 'NEW TITLE', todolistID: todoListId1})
+    const action = todolistThunks.editTodolist.fulfilled({title: 'NEW TITLE', todolistID: todoListId1}, 'req', {title: 'NEW TITLE', todolistID: todoListId1})
+
     const newState = todolistReducer(todoLists, action);
 
     expect(newState.length).toBe(2)
@@ -63,7 +57,9 @@ test('get todolists', () => {
         {id: v1(), title: 'What to buy', filter: 'all', addedDate: '', order: 0},
     ]
 
-    const newState = todolistReducer(state, setTodolistsAC({todolists: todoLists}))
+    const action = todolistThunks.getTodolists.fulfilled({todolists: todoLists}, 'req')
+
+    const newState = todolistReducer(state, action)
 
     expect(newState.length).toBe(2)
     expect(newState[0].title).toBe('What to learn')

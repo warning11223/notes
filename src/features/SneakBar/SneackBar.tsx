@@ -3,9 +3,9 @@ import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, {AlertProps} from '@mui/material/Alert';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../app/store';
 import {useAppDispatch} from '../../app/hooks';
-import {setErrorAC} from '../../reducers/errorReducer';
+import {selectError} from '../../selectors/errorSelectors';
+import {errorActions} from '../../reducers/errorReducer';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -16,14 +16,14 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 export function SneakBar() {
     const dispatch = useAppDispatch();
-    const error = useSelector<RootState, string | null>(state => state.errorReducer.error);
+    const error = useSelector(selectError);
 
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }
 
-        dispatch(setErrorAC({error: null}))
+        dispatch(errorActions.setErrorAC({error: null}))
     };
 
     return (
