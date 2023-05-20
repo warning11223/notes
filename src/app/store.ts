@@ -1,9 +1,9 @@
 import {AnyAction, combineReducers} from 'redux';
-import {tasksReducer} from '../reducers/tasksReducer';
-import {todolistReducer} from '../reducers/todolistReducer';
+import {tasksReducer} from '../reducers/tasks/tasksReducer';
+import {todolistReducer} from '../reducers/todolist/todolistReducer';
 import {ThunkAction, ThunkDispatch} from 'redux-thunk';
-import {errorReducer} from '../reducers/errorReducer';
-import {authReducer} from '../reducers/authReducer';
+import {errorReducer} from '../reducers/error/errorReducer';
+import {authReducer} from '../reducers/auth/authReducer';
 import {configureStore} from '@reduxjs/toolkit';
 
 export const rootReducer = combineReducers({

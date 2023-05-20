@@ -5,7 +5,7 @@ import MuiAlert, {AlertProps} from '@mui/material/Alert';
 import {useSelector} from 'react-redux';
 import {useAppDispatch} from '../../app/hooks';
 import {selectError} from '../../selectors/errorSelectors';
-import {errorActions} from '../../reducers/errorReducer';
+import {errorActions} from '../../reducers/error/errorReducer';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,

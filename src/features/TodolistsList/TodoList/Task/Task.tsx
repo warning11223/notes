@@ -1,13 +1,13 @@
 import React, {ChangeEvent, useCallback} from 'react';
 import s from '../TodoList.module.css';
 import Checkbox from '@mui/material/Checkbox/Checkbox';
-import {tasksThunks} from '../../../../reducers/tasksReducer';
+import {tasksThunks} from '../../../../reducers/tasks/tasksReducer';
 import EditableSpan from '../../../../components/EditableSpan/EditableSpan';
 import IconButton from '@mui/material/IconButton/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {TaskResponseType, TaskStatuses} from '../../../../api/todolist-api';
 import {useAppDispatch} from '../../../../app/hooks';
-import {StatusTypes} from '../../../../reducers/errorReducer';
+import {StatusTypes} from '../../../../reducers/error/errorReducer';
 
 type TaskProps = {
     task: TaskResponseType

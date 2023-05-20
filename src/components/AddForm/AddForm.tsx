@@ -69,7 +69,6 @@ const AddForm: React.FC<PropsType> = React.memo(({addTaskCallback, placeholder, 
                         style={{cursor: 'pointer'}}
                     />
                 </IconButton>
-                {/* <div className="error-message">{error}</div>*/}
             </div>
         </div>
     );

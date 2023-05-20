@@ -8,7 +8,7 @@ import Button from '@mui/material/Button/Button';
 import Box from '@mui/material/Box/Box';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {selectIsLoggedIn} from '../../selectors/authSelectors';
-import {authThunks} from '../../reducers/authReducer';
+import {authThunks} from '../../reducers/auth/authReducer';
 
 const ButtonAppBar = () => {
     const dispatch = useAppDispatch()

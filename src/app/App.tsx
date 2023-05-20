@@ -13,7 +13,7 @@ import {SneakBar} from '../features/SneakBar/SneackBar';
 import {useAppDispatch} from './hooks';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import {selectStatus} from '../selectors/errorSelectors';
-import {authThunks} from '../reducers/authReducer';
+import {authThunks} from '../reducers/auth/authReducer';
 
 export type FilterValuesType = 'all' | 'active' | 'completed';
 

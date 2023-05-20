@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {todolistThunks} from '../../reducers/todolistReducer';
+import {todolistThunks} from '../../reducers/todolist/todolistReducer';
 import Grid from '@mui/material/Grid/Grid';
 import Paper from '@mui/material/Paper/Paper';
 import {Todolist} from './TodoList/Todolist';

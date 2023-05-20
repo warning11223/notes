@@ -1,8 +1,8 @@
-import {ResultCode, TaskResponseType, TaskType, todolistAPI} from '../api/todolist-api';
+import {ResultCode, TaskResponseType, TaskType, todolistAPI} from '../../api/todolist-api';
 import {createSlice} from '@reduxjs/toolkit';
-import { clearData, todolistThunks} from './todolistReducer';
-import {createAppAsyncThunk, handlerServerNetworkError, handleServerAppError} from '../utils';
-import {errorActions} from './errorReducer';
+import { clearData, todolistThunks} from '../todolist/todolistReducer';
+import {createAppAsyncThunk, handlerServerNetworkError, handleServerAppError} from '../../utils';
+import {errorActions} from '../error/errorReducer';
 
 export type TasksType = {
     [key: string]: TaskResponseType[]

@@ -11,7 +11,7 @@ import {useFormik} from 'formik';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {Navigate} from 'react-router-dom';
 import {selectIsLoggedIn} from '../../selectors/authSelectors';
-import {authThunks} from '../../reducers/authReducer';
+import {authThunks} from '../../reducers/auth/authReducer';
 
 type FormikErrorType = {
     email?: string
@@ -37,6 +37,7 @@ export const Login = () => {
                     rememberMe: values.rememberMe
                 }
             }))
+
             formik.resetForm()
         },
         validate: (values) => {

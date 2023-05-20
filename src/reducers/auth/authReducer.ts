@@ -1,8 +1,8 @@
-import {authAPI, AuthRequestType, ResultCode} from '../api/todolist-api';
-import {clearData} from './todolistReducer';
+import {authAPI, AuthRequestType, ResultCode} from '../../api/todolist-api';
+import {clearData} from '../todolist/todolistReducer';
 import {createSlice} from '@reduxjs/toolkit';
-import {errorActions} from './errorReducer';
-import {createAppAsyncThunk, handlerServerNetworkError, handleServerAppError} from '../utils';
+import {errorActions} from '../error/errorReducer';
+import {createAppAsyncThunk, handlerServerNetworkError, handleServerAppError} from '../../utils';
 
 export type InitialAuthReducerStateType = typeof initialState
 
@@ -30,8 +30,8 @@ const loginSlice = createSlice({
 
 export const authReducer = loginSlice.reducer
 
-const login = createAppAsyncThunk<{value: boolean}, {data: AuthRequestType}>('login/login', async ({data}, thunkAPI) => {
-    const { dispatch, rejectWithValue } = thunkAPI
+const login = createAppAsyncThunk<{ value: boolean }, { data: AuthRequestType }>('login/login', async ({data}, thunkAPI) => {
+    const {dispatch, rejectWithValue} = thunkAPI
 
     try {
         dispatch(errorActions.setStatusAC({status: 'initialized'}))
@@ -49,8 +49,8 @@ const login = createAppAsyncThunk<{value: boolean}, {data: AuthRequestType}>('lo
     }
 })
 
-const logout = createAppAsyncThunk<{value: boolean}, void>('login/logout', async (_, thunkAPI) => {
-    const { dispatch, rejectWithValue } = thunkAPI
+const logout = createAppAsyncThunk<{ value: boolean }, void>('login/logout', async (_, thunkAPI) => {
+    const {dispatch, rejectWithValue} = thunkAPI
 
     try {
         dispatch(errorActions.setStatusAC({status: 'initialized'}))
@@ -70,7 +70,7 @@ const logout = createAppAsyncThunk<{value: boolean}, void>('login/logout', async
 })
 
 const authMe = createAppAsyncThunk('login/authMe', async (arg, thunkAPI) => {
-    const { dispatch, rejectWithValue } = thunkAPI
+    const {dispatch, rejectWithValue} = thunkAPI
 
     try {
         dispatch(errorActions.setStatusAC({status: 'initialized'}))

@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton/IconButton';
 import Task from './Task/Task';
 import FilterButton from '../../../components/FilterButton/FilterButton';
-import {changeFilterAC, todolistThunks, TodoListType} from '../../../reducers/todolistReducer';
+import {changeFilterAC, todolistThunks, TodoListType} from '../../../reducers/todolist/todolistReducer';
 import {useAppDispatch} from '../../../app/hooks';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import {useSelector} from 'react-redux';
@@ -14,7 +14,7 @@ import {TaskResponseType, TaskStatuses} from '../../../api/todolist-api';
 
 import s from './TodoList.module.css';
 import {selectStatus} from '../../../selectors/errorSelectors';
-import {tasksThunks} from '../../../reducers/tasksReducer';
+import {tasksThunks} from '../../../reducers/tasks/tasksReducer';
 
 type PropsType = {
     tasks: TaskResponseType[]

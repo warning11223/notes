@@ -1,7 +1,7 @@
 import {v1} from 'uuid';
 import {tasksReducer, tasksThunks, TasksType} from './tasksReducer';
-import {todolistThunks, TodoListType} from './todolistReducer';
-import {TaskStatuses} from '../api/todolist-api';
+import {todolistThunks, TodoListType} from '../todolist/todolistReducer';
+import {TaskStatuses} from '../../api/todolist-api';
 
 const todoListId1 = v1()
 const todoListId2 = v1()
@@ -149,7 +149,7 @@ test('task should be added to todolist', () => {
 
 test('checked value should be changed to opposite', () => {
     const args = { todolistID: todoListId1, taskID: '1', taskModel: { status: TaskStatuses.New } }
-    const action = tasksThunks.editTask.fulfilled(args, 'requiestId', args)
+    const action = tasksThunks.editTask.fulfilled(args, 'requestId', args)
 
 
     const newTasks = tasksReducer(tasks, action)
@@ -161,7 +161,7 @@ test('checked value should be changed to opposite', () => {
 test('title value of task should be edited', () => {
     const taskId = tasks[todoListId1][1].id;
     const args = { todolistID: todoListId1, taskID: taskId, taskModel: { title: 'new title' } }
-    const action = tasksThunks.editTask.fulfilled(args, 'requiestId', args)
+    const action = tasksThunks.editTask.fulfilled(args, 'requestId', args)
 
     const newTasks = tasksReducer(tasks, action)
 
@@ -216,10 +216,7 @@ test('get tasks', () => {
         }
     ];
 
-    const action = tasksThunks.fetchTasks.fulfilled({
-        tasks: tasks1,
-        todolistID: todoListId1
-    }, 'requestId', todoListId1)
+    const action = tasksThunks.fetchTasks.fulfilled({ tasks: tasks1, todolistID: todoListId1 }, 'requestId', todoListId1)
     const newTasks: TasksType = tasksReducer(tasks, action)
 
     expect(newTasks[todoListId1].length).toBe(1)
@@ -241,34 +238,6 @@ test('empty arrays should be added when we set todolists', () => {
     expect(newTasks[todoListId1]).toStrictEqual([])
 })
 
-/*test('tasks should be added for todolist', () => {
-    const tasks1 = [
-        {
-            id: v1(),
-            title: 'Milk',
-            completed: true,
-            status: 1,
-            todoListId: todoListId1,
-            deadline: '',
-            description: '',
-            priority: 0,
-            order: 2,
-            startDate: '',
-            addedDate: ''
-        }
-    ]
-
-    const action = tasksThunks.fetchTasks.fulfilled({
-        tasks: tasks1,
-        todolistID: todoListId1
-    }, 'requestId', todoListId1)
-
-    const newTasks: TasksType = tasksReducer(tasks, action)
-
-    expect(newTasks[todoListId1].length).toBe(1)
-    expect(newTasks[todoListId1][0].title).toBe('Milk')
-})*/
-
 test('task should be edited', () => {
     const tasks: TasksType = ({
         [todoListId1]: [
@@ -289,7 +258,7 @@ test('task should be edited', () => {
     })
 
     const args = { todolistID: todoListId1, taskID: taskId, taskModel: { title: 'hello' } }
-    const action = tasksThunks.editTask.fulfilled(args, 'requiestId', args)
+    const action = tasksThunks.editTask.fulfilled(args, 'requestId', args)
 
     const newTasks: TasksType = tasksReducer(tasks, action)
 
