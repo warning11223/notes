@@ -1,11 +1,8 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
-
-
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import s from './AddForm.module.css'
-
 import TextField from '@mui/material/TextField/TextField';
 import IconButton from '@mui/material/IconButton/IconButton';
+import s from './AddForm.module.css'
 
 
 type PropsType = {
@@ -14,7 +11,7 @@ type PropsType = {
     disabled?: boolean
 }
 
-const AddForm: React.FC<PropsType> = React.memo(({addTaskCallback, placeholder, disabled}) => {
+export const AddForm: React.FC<PropsType> = React.memo(({addTaskCallback, placeholder, disabled}) => {
     let [title, setTitle] = useState('')
     const [error, setError] = useState<string | null>(null)
 
@@ -52,6 +49,7 @@ const AddForm: React.FC<PropsType> = React.memo(({addTaskCallback, placeholder, 
             <div className={s.textContainer}>
                 <TextField
                     size="small"
+                    color={"warning"}
                     label={`${error ? 'Error' : `${placeholder}`}`}
                     variant="outlined"
                     value={title}
@@ -73,5 +71,3 @@ const AddForm: React.FC<PropsType> = React.memo(({addTaskCallback, placeholder, 
         </div>
     );
 })
-
-export default AddForm;

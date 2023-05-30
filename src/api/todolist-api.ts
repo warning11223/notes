@@ -63,11 +63,16 @@ export const authAPI = {
     }
 }
 
+export type FieldError = {
+    field: string
+    error: string
+}
 
 export type ResponseType<D> = {
     resultCode: number
     messages: string[]
     data: D
+    fieldsErrors?: FieldError[]
 }
 
 export enum TaskStatuses {

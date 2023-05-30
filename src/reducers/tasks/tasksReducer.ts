@@ -1,8 +1,9 @@
 import {ResultCode, TaskResponseType, TaskType, todolistAPI} from '../../api/todolist-api';
 import {createSlice} from '@reduxjs/toolkit';
-import { clearData, todolistThunks} from '../todolist/todolistReducer';
-import {createAppAsyncThunk, handlerServerNetworkError, handleServerAppError} from '../../utils';
+import {todolistThunks} from '../todolist/todolistReducer';
+import {createAppAsyncThunk, handlerServerNetworkError, handleServerAppError} from '../../common/utils';
 import {errorActions} from '../error/errorReducer';
+import {todolistFunctions} from '../todolist';
 
 export type TasksType = {
     [key: string]: TaskResponseType[]
@@ -68,7 +69,7 @@ const tasksSlice = createSlice({
             .addCase(todolistThunks.removeTodolist.fulfilled, (state, action) => {
                 delete state[action.payload.todolistID];
             })
-            .addCase(clearData, () => {
+            .addCase(todolistFunctions.clearData, () => {
                 return {}
             })
     }

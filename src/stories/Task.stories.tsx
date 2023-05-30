@@ -1,10 +1,9 @@
 import React from 'react';
-
 import {ComponentMeta, ComponentStory} from '@storybook/react';
-
 import {action} from '@storybook/addon-actions';
-import Task from '../features/TodolistsList/TodoList/Task/Task';
 import {ReduxStoreProviderDecorator} from './decorators/ReduxStoreProviderDecorator';
+import { Task } from '../features/TodolistsList/TodoList/Task';
+
 
 export default {
     title: 'Task',

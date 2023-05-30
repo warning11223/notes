@@ -6,7 +6,7 @@ type PropsType = {
     editCallback: (value: string) => void
 }
 
-const EditableSpan: React.FC<PropsType> = React.memo(({children, editCallback}) => {
+export const EditableSpan: React.FC<PropsType> = React.memo(({children, editCallback}) => {
     const [editable, setEditable] = useState(false);
     const [valueInput, setValueInput] = useState('');
 
@@ -38,4 +38,3 @@ const EditableSpan: React.FC<PropsType> = React.memo(({children, editCallback}) 
     )
 })
 
-export default EditableSpan;

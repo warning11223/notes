@@ -1,5 +1,6 @@
 import {v1} from 'uuid';
-import {changeEntityStatusAC, changeFilterAC, clearData, todolistReducer, todolistThunks, TodoListType} from './todolistReducer';
+import {todolistReducer, todolistThunks, TodoListType} from './todolistReducer';
+import {todolistFunctions} from './index';
 
 const todoListId1 = v1()
 const todoListId2 = v1()
@@ -65,20 +66,21 @@ test('get todolists', () => {
 })
 
 test('entityStatus should be edited', () => {
-    const newState = todolistReducer(todoLists, changeEntityStatusAC({todolistID: todoListId1, status: 'loading'}))
+
+    const newState = todolistReducer(todoLists, todolistFunctions.changeEntityStatusAC({todolistID: todoListId1, status: 'loading'}))
 
     expect(newState[0].entityStatus).toBe('loading')
 
 })
 
 test('filter of tasks should be changed', () => {
-    const newState = todolistReducer(todoLists, changeFilterAC({todolistID: todoListId1, filter: 'active'}))
+    const newState = todolistReducer(todoLists, todolistFunctions.changeFilterAC({todolistID: todoListId1, filter: 'active'}))
 
     expect(newState[0].filter).toBe('active')
     expect(newState[1].filter).toBe('all')
 })
 
 test('should return empty array', () => {
-    const newState = todolistReducer(todoLists, clearData())
+    const newState = todolistReducer(todoLists, todolistFunctions.clearData())
     expect(newState.length).toBe(0)
 })

@@ -7,11 +7,13 @@ import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import {useFormik} from 'formik';
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import {FormikHelpers, useFormik} from 'formik';
 import {Navigate} from 'react-router-dom';
-import {selectIsLoggedIn} from '../../selectors/authSelectors';
+import {selectIsLoggedIn} from '../../selectors';
 import {authThunks} from '../../reducers/auth/authReducer';
+import {AuthRequestType, ResponseType} from '../../api/todolist-api';
+import {useAppSelector} from '../../common/hooks';
+import {useActions} from '../../common/utils';
 
 type FormikErrorType = {
     email?: string
@@ -20,7 +22,7 @@ type FormikErrorType = {
 }
 
 export const Login = () => {
-    const dispatch = useAppDispatch()
+    const {login} = useActions(authThunks)
     const isLoggedIn = useAppSelector(selectIsLoggedIn)
 
     const formik = useFormik({
@@ -29,19 +31,25 @@ export const Login = () => {
             password: '',
             rememberMe: false
         },
-        onSubmit: values => {
-            dispatch(authThunks.login({
+        onSubmit: (values, formikHelpers: FormikHelpers<AuthRequestType>) => {
+            login({
                 data: {
                     email: values.email,
                     password: values.password,
                     rememberMe: values.rememberMe
                 }
-            }))
+            })
+                .unwrap()
+                .catch((reason: ResponseType<{}>) => {
+                    reason.fieldsErrors?.forEach(item => {
+                        formikHelpers.setFieldError(item.field, item.error)
+                    })
+                })
 
             formik.resetForm()
         },
         validate: (values) => {
-            const errors: FormikErrorType = {}
+            /*const errors: FormikErrorType = {}
             if (!values.email) {
                 errors.email = 'Email required'
             } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
@@ -51,7 +59,7 @@ export const Login = () => {
             } else if (!values.password) {
                 errors.password = 'Password required'
             }
-            return errors
+            return errors*/
         },
     })
 
@@ -81,8 +89,10 @@ export const Login = () => {
                             color={'warning'}
                             {...formik.getFieldProps('email')}
                         />
-                        {formik.errors.email && formik.touched.email ?
-                            <div style={{color: 'red'}}>{formik.errors.email}</div> : null}
+                        {formik.errors.email
+                            ? <div style={{color: 'red'}}>{formik.errors.email}</div>
+                            : null
+                        }
                         <TextField
                             id="password"
                             type="password"
@@ -91,8 +101,10 @@ export const Login = () => {
                             color={'warning'}
                             {...formik.getFieldProps('password')}
                         />
-                        {formik.errors.password && formik.touched.password ?
-                            <div style={{color: 'red'}}>{formik.errors.password}</div> : null}
+                        {formik.errors.password
+                            ? <div style={{color: 'red'}}>{formik.errors.password}</div>
+                            : null
+                        }
                         <FormControlLabel
                             id="rememberMe"
                             label={'Remember me'}

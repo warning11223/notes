@@ -8,7 +8,7 @@ type FilterButtonType = {
     children: React.ReactNode
 }
 
-const FilterButton: React.FC<FilterButtonType> = React.memo(({changeFilterHandler, variant, color, children}) => {
+export const FilterButton: React.FC<FilterButtonType> = React.memo(({changeFilterHandler, variant, color, children}) => {
     return (
         <Button
             variant={variant}
@@ -18,5 +18,3 @@ const FilterButton: React.FC<FilterButtonType> = React.memo(({changeFilterHandle
         >{children}</Button>
     );
 })
-
-export default FilterButton;

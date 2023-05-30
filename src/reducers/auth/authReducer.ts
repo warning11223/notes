@@ -1,8 +1,8 @@
 import {authAPI, AuthRequestType, ResultCode} from '../../api/todolist-api';
-import {clearData} from '../todolist/todolistReducer';
 import {createSlice} from '@reduxjs/toolkit';
 import {errorActions} from '../error/errorReducer';
-import {createAppAsyncThunk, handlerServerNetworkError, handleServerAppError} from '../../utils';
+import {createAppAsyncThunk, handlerServerNetworkError, handleServerAppError} from '../../common/utils';
+import {todolistFunctions} from '../todolist';
 
 export type InitialAuthReducerStateType = typeof initialState
 
@@ -34,14 +34,14 @@ const login = createAppAsyncThunk<{ value: boolean }, { data: AuthRequestType }>
     const {dispatch, rejectWithValue} = thunkAPI
 
     try {
-        dispatch(errorActions.setStatusAC({status: 'initialized'}))
+        //dispatch(errorActions.setStatusAC({status: 'initialized'}))
         const res = await authAPI.login(data)
         if (res.data.resultCode === ResultCode.OK) {
-            dispatch(errorActions.setStatusAC({status: 'succeeded'}))
+            //dispatch(errorActions.setStatusAC({status: 'succeeded'}))
             return {value: true}
         } else {
             handleServerAppError(res.data, dispatch)
-            return rejectWithValue(null)
+            return rejectWithValue(res.data)
         }
     } catch (e) {
         handlerServerNetworkError(e, dispatch)
@@ -57,7 +57,7 @@ const logout = createAppAsyncThunk<{ value: boolean }, void>('login/logout', asy
         const res = await authAPI.logout()
         if (res.data.resultCode === ResultCode.OK) {
             dispatch(errorActions.setStatusAC({status: 'succeeded'}))
-            dispatch(clearData())
+            dispatch(todolistFunctions.clearData())
             return {value: false}
         } else {
             handleServerAppError(res.data, dispatch)
@@ -79,7 +79,7 @@ const authMe = createAppAsyncThunk('login/authMe', async (arg, thunkAPI) => {
             dispatch(errorActions.setStatusAC({status: 'succeeded'}))
             return {value: true}
         } else {
-            handleServerAppError(res.data, dispatch)
+            dispatch(errorActions.setStatusAC({status: 'idle'}))
             return rejectWithValue(null)
         }
     } catch (e) {

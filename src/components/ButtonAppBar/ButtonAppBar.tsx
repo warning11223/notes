@@ -6,16 +6,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography/Typography';
 import Button from '@mui/material/Button/Button';
 import Box from '@mui/material/Box/Box';
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {selectIsLoggedIn} from '../../selectors/authSelectors';
+import {selectIsLoggedIn} from '../../selectors';
 import {authThunks} from '../../reducers/auth/authReducer';
+import {useAppDispatch, useAppSelector} from '../../common/hooks';
+import {useActions} from '../../common/utils';
 
-const ButtonAppBar = () => {
-    const dispatch = useAppDispatch()
+export const ButtonAppBar = () => {
+    const { logout } = useActions(authThunks)
     const isLoggedIn = useAppSelector(selectIsLoggedIn)
 
     const logoutHandler = () => {
-        dispatch(authThunks.logout())
+        logout()
     }
 
     return (
@@ -32,7 +33,7 @@ const ButtonAppBar = () => {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{flexGrow: 1}} color="white">
-                        Todolist app
+                        SCRATCHPAD
                     </Typography>
                     {
                         isLoggedIn &&  <Button color="info" onClick={logoutHandler}>Logout</Button>
@@ -42,5 +43,3 @@ const ButtonAppBar = () => {
         </Box>
     );
 };
-
-export default ButtonAppBar;
