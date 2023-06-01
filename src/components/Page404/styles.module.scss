@@ -1,0 +1,17 @@
+.page404 {
+  text-align: center;
+
+  &__link {
+    position: absolute;
+    padding-top: 30px;
+    text-decoration: none;
+    color: #000000;
+    font-size: 20px;
+    font-weight: normal;
+    transition: all .2s linear;
+
+    &:hover {
+      color: #ed6c02;
+    }
+  }
+}

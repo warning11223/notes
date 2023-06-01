@@ -5,14 +5,15 @@ import Container from "@mui/material/Container/Container";
 import { Header } from "../components/Header";
 import { useSelector } from "react-redux";
 import LinearProgress from "@mui/material/LinearProgress/LinearProgress";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { TodolistsList } from "../features/TodolistsList";
 import { Login } from "../features/Login";
 import { SneakBar } from "../features/SneakBar";
 import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
 import { authThunks } from "../reducers/auth/authSlice";
 import { useActions } from "../common/utils";
-import {selectStatus} from '../reducers/error/errorSelectors';
+import { selectStatus } from "../reducers/error/errorSelectors";
+import { Page404 } from "../components/Page404/Page404";
 
 export type FilterValuesType = "all" | "active" | "completed";
 
@@ -33,7 +34,7 @@ type AppPropsType = {
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/notes",
     element: <TodolistsList />,
   },
   {
@@ -41,8 +42,12 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
+    path: "/page404",
+    element: <Page404 />,
+  },
+  {
     path: "*",
-    element: <h1>404 not found</h1>,
+    element: <Navigate to={"/page404"}/>,
   },
 ]);
 
