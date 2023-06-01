@@ -1,40 +1,43 @@
-import React, {ChangeEvent, useState} from 'react';
-import TextField from '@mui/material/TextField';
+import React, { ChangeEvent, useState } from "react";
+import TextField from "@mui/material/TextField";
 
 type PropsType = {
-    children: React.ReactNode
-    editCallback: (value: string) => void
-}
+  children: React.ReactNode;
+  editCallback: (value: string) => void;
+};
 
-export const EditableSpan: React.FC<PropsType> = React.memo(({children, editCallback}) => {
+export const EditableSpan: React.FC<PropsType> = React.memo(
+  ({ children, editCallback }) => {
     const [editable, setEditable] = useState(false);
-    const [valueInput, setValueInput] = useState('');
+    const [valueInput, setValueInput] = useState("");
 
     const changeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setValueInput(e.currentTarget.value);
-    }
+      setValueInput(e.currentTarget.value);
+    };
 
     const doubleClickHandler = () => {
-        setEditable(true);
-        children ? setValueInput(children.toString()) : setValueInput('');
-    }
+      setEditable(true);
+      children ? setValueInput(children.toString()) : setValueInput("");
+    };
 
     const onBlurHandler = () => {
-        setEditable(false);
-        setValueInput(valueInput);
-        editCallback(valueInput);
-    }
+      setEditable(false);
+      setValueInput(valueInput);
+      editCallback(valueInput);
+    };
 
-    return (
-        editable ? <TextField
-            variant="standard"
-            color="warning"
-            type="text"
-            value={valueInput}
-            onChange={changeInputHandler}
-            onBlur={onBlurHandler}
-            autoFocus
-        /> : <span onDoubleClick={doubleClickHandler}>{children}</span>
-    )
-})
-
+    return editable ? (
+      <TextField
+        variant="standard"
+        color="warning"
+        type="text"
+        value={valueInput}
+        onChange={changeInputHandler}
+        onBlur={onBlurHandler}
+        autoFocus
+      />
+    ) : (
+      <span onDoubleClick={doubleClickHandler}>{children}</span>
+    );
+  }
+);

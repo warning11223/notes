@@ -1,18 +1,17 @@
-import React from 'react';
+import React from "react";
 
-import {ComponentStory, ComponentMeta} from '@storybook/react';
+import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import {action} from '@storybook/addon-actions';
-import { EditableSpan } from '../components/EditableSpan';
-
+import { action } from "@storybook/addon-actions";
+import { EditableSpan } from "../components/EditableSpan";
 
 export default {
-    title: 'EditableSpan',
-    component: EditableSpan,
+  title: "EditableSpan",
+  component: EditableSpan,
 } as ComponentMeta<typeof EditableSpan>;
 
-const editHandler = action('Span was edited')
+const editHandler = action("Span was edited");
 
 export const EditableSpanExample: ComponentStory<typeof EditableSpan> = () => (
-    <EditableSpan editCallback={editHandler} children={'task1'} />
+  <EditableSpan editCallback={editHandler} children={"task1"} />
 );

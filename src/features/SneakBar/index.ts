@@ -1,1 +1,1 @@
-export {SneakBar} from './SneackBar'
+export { SneakBar } from "./SneackBar";

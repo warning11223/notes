@@ -1,6 +1,6 @@
 .textContainer {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    height: 60px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 60px;
 }
